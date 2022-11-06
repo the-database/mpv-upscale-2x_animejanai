@@ -33,7 +33,6 @@ if (Get-Command -Name choco.exe -ErrorAction SilentlyContinue) {
 $repo = "vapoursynth/vapoursynth"
 $releases = "https://api.github.com/repos/$repo/releases"
 $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
-$tag = "R60" # TODO REMOVE
 $fileVapoursynth = "VapourSynth64-$tag.exe"
 $download = "https://github.com/$repo/releases/download/$tag/$fileVapoursynth"
 Write-Host "Downloading Vapoursynth $download"
