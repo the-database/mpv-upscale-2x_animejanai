@@ -1,5 +1,11 @@
 # mpv-upscale
-## Setup Instructions
+## Installer Instructions
+1. Download `installer.ps1` from this repository
+2. Download ONNX model and move to same directory as `installer.ps1`
+3. Run Powershell with Admin rights, navigate to directory containing `installer.ps1`, execute installer with command: `.\install.ps1`
+
+## Manual Setup Instructions
+1. Install latest Python 3.10.x from https://www.python.org/downloads/windows/
 1. Install latest Vapoursynth64 from https://github.com/vapoursynth/vapoursynth/releases
 2. Install latest pre-release vs-mlrt from https://github.com/AmusementClub/vs-mlrt/releases
    1. Download vsmlrt-windows-x64-cuda.v12.7z and extract contents to `%APPDATA%\VapourSynth\plugins64`
