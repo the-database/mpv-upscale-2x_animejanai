@@ -104,7 +104,10 @@ $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
 $editFile = "$sourceFolder\shaders\2x_SharpLinesLite.vpy"
 (Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$engineName""" | Set-Content $editFile
 Copy-Item -Force -Path $sourceFolder\* -Destination "$env:APPDATA/mpv.net" -Recurse
-
+if (!(Test-Path "$env:APPDATA/mpv.net/custom.conf"))
+{
+   New-Item -path $env:APPDATA/mpv.net -name custom.conf -type "file" 
+}
 
 # Cleanup
 Remove-Item -LiteralPath $sourceFolder -Force -Recurse
