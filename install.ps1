@@ -66,7 +66,7 @@ Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale/archive/r
 
 # Extract mpv.net 
 Write-Host "Installing mpv.net"
-Expand-Archive -Path $fileMpvNet -DestinationPath C:\mpv.net
+Expand-Archive -Force -Path $fileMpvNet -DestinationPath C:\mpv.net
 
 # Install Python 3.10
 $version = (&{python -V}).Exception.Message
@@ -92,7 +92,7 @@ $env:CUDA_MODULE_LOADING="LAZY"
 $engineName = (Get-Item -Path $onnx).BaseName
 $pluginPath = "$env:APPDATA/VapourSynth/plugins64/vsmlrt-cuda"
 $enginePath = "$pluginPath/$engineName.engine"
-Copy-Item -Path $onnx -Destination $enginePath
+Copy-Item -Force -Path $onnx -Destination $enginePath
 & "$pluginPath\trtexec" --fp16 --onnx=$onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 
 # Extract mpv-upscale
