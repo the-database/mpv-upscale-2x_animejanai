@@ -103,7 +103,7 @@ else {
 }
 
 # Install VapourSynth 
-if ((&{vspipe -v}) -like "*$tagVapoursynth*") {
+if ((&{vspipe -v} 2>&1) -like "*$tagVapoursynth*") {
     Write-Host "VapourSynth $tagVapoursynth is installed"
 } else {
     Write-Host "Installing VapourSynth - choose Install for all users"
