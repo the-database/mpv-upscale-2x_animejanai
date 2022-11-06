@@ -29,23 +29,47 @@ if (Get-Command -Name choco.exe -ErrorAction SilentlyContinue) {
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
+
+$pluginPath = "$env:APPDATA/VapourSynth/plugins64/vsmlrt-cuda"
+
+
 # download Vapoursynth
 $repo = "vapoursynth/vapoursynth"
 $releases = "https://api.github.com/repos/$repo/releases"
-$tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
-$fileVapoursynth = "VapourSynth64-$tag.exe"
-$download = "https://github.com/$repo/releases/download/$tag/$fileVapoursynth"
+$tagVapoursynth = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+$fileVapoursynth = "VapourSynth64-$tagVapoursynth.exe"
+$download = "https://github.com/$repo/releases/download/$tagVapoursynth/$fileVapoursynth"
 Write-Host "Downloading Vapoursynth $download"
 Start-BitsTransfer -Source $download -Destination $fileVapoursynth
 
 # download vs-mlrt
-$repo = "AmusementClub/vs-mlrt"
-$releases = "https://api.github.com/repos/$repo/releases"
-$tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
-$fileVsMlrt = "vsmlrt-windows-x64-cuda.$tag.7z"
-$download = "https://github.com/$repo/releases/download/$tag/$fileVsMlrt"
-Write-Host "Downloading vs-mlrt $download"
-Start-BitsTransfer -Source $download -Destination $fileVsMlrt
+$installVsMlrt = !(Test-Path $pluginPath)
+if (-not $installVsMlrt) {
+    # Create prompt body
+    $title = "Confirm"
+    $message = "vs-mlrt is already installed. Reinstall latest version?"
+    
+    # Create answers
+    $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Continue with the next step of the operation."
+    $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Skip this operation and proceed with the next operation."
+    
+    # Create ChoiceDescription with answers
+    $options = [System.Management.Automation.Host.ChoiceDescription[]]($yes, $no)
+
+    # Show prompt and save user's answer to variable
+    $response = $host.UI.PromptForChoice($title, $message, $options, 1)
+
+    $installVsMlrt = $response -eq 0
+}
+if ($installVsMlrt) {
+    $repo = "AmusementClub/vs-mlrt"
+    $releases = "https://api.github.com/repos/$repo/releases"
+    $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+    $fileVsMlrt = "vsmlrt-windows-x64-cuda.$tag.7z"
+    $download = "https://github.com/$repo/releases/download/$tag/$fileVsMlrt"
+    Write-Host "Downloading vs-mlrt $download"
+    Start-BitsTransfer -Source $download -Destination $fileVsMlrt
+}
 
 # download mpv.net
 $repo = "mpvnet-player/mpv.net"
@@ -63,6 +87,7 @@ $download = "https://github.com/the-database/mpv-upscale/archive/refs/heads/main
 Write-Host "Downloading mpv.net custom configurations $download"
 Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip -Destination $fileMpvUpscale
 
+
 # Extract mpv.net 
 Write-Host "Installing mpv.net"
 Expand-Archive -Force -Path $fileMpvNet -DestinationPath C:\mpv.net
@@ -78,21 +103,46 @@ else {
 }
 
 # Install VapourSynth 
-Write-Host "Installing VapourSynth - choose Install for all users"
-Start-Process -FilePath $fileVapoursynth -Wait -PassThru -Verb runAs -ArgumentList '/s','/v"/qn"'
+if ((&{vspipe -v}) -like "*$tagVapoursynth*") {
+    Write-Host "VapourSynth $tagVapoursynth is installed"
+} else {
+    Write-Host "Installing VapourSynth - choose Install for all users"
+    Start-Process -FilePath $fileVapoursynth -Wait -PassThru -Verb runAs -ArgumentList '/s','/v"/qn"'
+}
 
 # Extract vs-mlrt
-Write-Host "Installing vs-mlrt"
-Expand-7Zip -ArchiveFileName $fileVsMlrt -TargetPath "$env:APPDATA/VapourSynth/plugins64"
+if ($installVsMlrt) { 
+    Write-Host "Installing vs-mlrt"
+    Expand-7Zip -ArchiveFileName $fileVsMlrt -TargetPath "$env:APPDATA/VapourSynth/plugins64"
+}
 
 # Copy ONNX
 Write-Host "Creating TensorRT engine from ONNX model"
 $env:CUDA_MODULE_LOADING="LAZY"
 $engineName = (Get-Item -Path $onnx).BaseName
-$pluginPath = "$env:APPDATA/VapourSynth/plugins64/vsmlrt-cuda"
 $enginePath = "$pluginPath/$engineName.engine"
-Copy-Item -Force -Path $onnx -Destination $enginePath
-& "$pluginPath\trtexec" --fp16 --onnx=$onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+Copy-Item -Path $onnx -Destination $enginePath
+$createEngine = !(Test-Path $enginePath)
+if (-not $createEngine) {
+    # Create prompt body
+    $title = "Confirm"
+    $message = "$enginePath already exists. Re-generate engine and replace existing engine?"
+    
+    # Create answers
+    $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Continue with the next step of the operation."
+    $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Skip this operation and proceed with the next operation."
+    
+    # Create ChoiceDescription with answers
+    $options = [System.Management.Automation.Host.ChoiceDescription[]]($yes, $no)
+
+    # Show prompt and save user's answer to variable
+    $response = $host.UI.PromptForChoice($title, $message, $options, 1)
+
+    $createEngine = $response -eq 0
+}
+if ($createEngine) {
+    & "$pluginPath\trtexec" --fp16 --onnx=$onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+}
 
 # Extract mpv-upscale
 Write-Host "Installing mpv.net custom configurations"
@@ -108,9 +158,12 @@ if (!(Test-Path "$env:APPDATA/mpv.net/custom.conf"))
    New-Item -path $env:APPDATA/mpv.net -name custom.conf -type "file" 
 }
 
+
 # Cleanup
 Remove-Item -LiteralPath $sourceFolder -Force -Recurse
 Remove-Item -Path $fileMpvNet -Force
-Remove-Item -Path $fileVsMlrt -Force
 Remove-Item -Path $fileVapourSynth -Force 
 Remove-Item -Path $fileMpvUpscale -Force
+if ($installVsMlrt) {
+    Remove-Item -Path $fileVsMlrt -Force
+}
