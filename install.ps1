@@ -7,6 +7,8 @@ if (Test-Path *.onnx -PathType Leaf) {
     Exit 1
 }
 
+Import-Module BitsTransfer
+
 #   Install 7zip module
 if (Get-Module -ListAvailable -Name 7Zip4PowerShell) {
     Write-Host "7Zip4PowerShell Module exists"
@@ -35,7 +37,7 @@ $tag = "R60" # TODO REMOVE
 $fileVapoursynth = "VapourSynth64-$tag.exe"
 $download = "https://github.com/$repo/releases/download/$tag/$fileVapoursynth"
 Write-Host "Downloading Vapoursynth $download"
-Invoke-WebRequest $download -OutFile $file
+Start-BitsTransfer -Source $download -Destination $fileVapoursynth
 
 # download vs-mlrt
 $repo = "AmusementClub/vs-mlrt"
@@ -44,7 +46,7 @@ $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
 $fileVsMlrt = "vsmlrt-windows-x64-cuda.$tag.7z"
 $download = "https://github.com/$repo/releases/download/$tag/$fileVsMlrt"
 Write-Host "Downloading vs-mlrt $download"
-Invoke-WebRequest $download -OutFile $file
+Start-BitsTransfer -Source $download -Destination $fileVsMlrt
 
 # download mpv.net
 $repo = "mpvnet-player/mpv.net"
@@ -54,15 +56,13 @@ $version = $tag.Replace("v", "")
 $fileMpvNet = "mpv.net-$version.zip"
 $download = "https://github.com/$repo/releases/download/$tag/$fileMpvNet"
 Write-Host "Downloading mpv.net $download"
-Invoke-WebRequest $download -OutFile $file
+Start-BitsTransfer -Source $download -Destination $fileMpvNet
 
 # download mpv-upscale
 $fileMpvUpscale = "mpv-upscale.zip"
 $download = "https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip"
 Write-Host "Downloading mpv.net custom configurations $download"
-Invoke-WebRequest https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip -OutFile $fileMpvUpscale
-
-
+Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip -Destination $fileMpvUpscale
 
 # Extract mpv.net 
 Write-Host "Installing mpv.net"
@@ -103,7 +103,7 @@ $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
 (Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$engineName""" | Set-Content $editFile
 $editFile = "$sourceFolder\shaders\2x_SharpLinesLite.vpy"
 (Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$engineName""" | Set-Content $editFile
-Copy-Item -Path $sourceFolder\* -Destination "$env:APPDATA/mpv.net" -Recurse
+Copy-Item -Force -Path $sourceFolder\* -Destination "$env:APPDATA/mpv.net" -Recurse
 
 
 # Cleanup
@@ -111,4 +111,4 @@ Remove-Item -LiteralPath $sourceFolder -Force -Recurse
 Remove-Item -Path $fileMpvNet -Force
 Remove-Item -Path $fileVsMlrt -Force
 Remove-Item -Path $fileVapourSynth -Force 
-Remove-Item -Path $mpvUpscale -Force
+Remove-Item -Path $fileMpvUpscale -Force
