@@ -36,7 +36,7 @@ $pluginPath = "$env:APPDATA/VapourSynth/plugins64/vsmlrt-cuda"
 # download Vapoursynth
 $repo = "vapoursynth/vapoursynth"
 $releases = "https://api.github.com/repos/$repo/releases"
-$tagVapoursynth = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+$tagVapoursynth = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
 $fileVapoursynth = "VapourSynth64-$tagVapoursynth.exe"
 $download = "https://github.com/$repo/releases/download/$tagVapoursynth/$fileVapoursynth"
 Write-Host "Downloading Vapoursynth $download"
@@ -64,7 +64,7 @@ if (-not $installVsMlrt) {
 if ($installVsMlrt) {
     $repo = "AmusementClub/vs-mlrt"
     $releases = "https://api.github.com/repos/$repo/releases"
-    $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+    $tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
     $fileVsMlrt = "vsmlrt-windows-x64-cuda.$tag.7z"
     $download = "https://github.com/$repo/releases/download/$tag/$fileVsMlrt"
     Write-Host "Downloading vs-mlrt $download"
@@ -74,7 +74,7 @@ if ($installVsMlrt) {
 # download mpv.net
 $repo = "mpvnet-player/mpv.net"
 $releases = "https://api.github.com/repos/$repo/releases"
-$tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+$tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
 $version = $tag.Replace("v", "")
 $fileMpvNet = "mpv.net-$version.zip"
 $download = "https://github.com/$repo/releases/download/$tag/$fileMpvNet"
