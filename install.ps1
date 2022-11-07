@@ -1,7 +1,12 @@
 # Test for ONNX model
 if (Test-Path *.onnx -PathType Leaf) {
-    $onnx = @(gci *.onnx)[0]
-    Write-Host "Using ONNX model $onnx"
+    $hdOnnx = @(Get-ChildItem *UltraCompact*.onnx)[0]
+    $sdOnnx = @(Get-ChildItem *Compact*.onnx -Exclude "UltraCompact")[0]
+    if ($null -eq $sdOnnx) {
+        $sdOnnx = $hdOnnx
+    }
+    Write-Host "For SD content, using ONNX model $sdOnnx"
+    Write-Host "For HD content, using ONNX model $hdOnnx"
 } else {
     Write-Error "ONNX model not found. Download ONNX model and place in the same directory as this installer and try again."
     Exit 1
@@ -116,12 +121,12 @@ if ($installVsMlrt) {
     Expand-7Zip -ArchiveFileName $fileVsMlrt -TargetPath "$env:APPDATA/VapourSynth/plugins64"
 }
 
-# Copy ONNX
-Write-Host "Creating TensorRT engine from ONNX model"
+# Copy HD ONNX and create engine
+Write-Host "Creating TensorRT engine from ONNX model $hdOnnx"
 $env:CUDA_MODULE_LOADING="LAZY"
-$engineName = (Get-Item -Path $onnx).BaseName
-$enginePath = "$pluginPath/$engineName.engine"
-Copy-Item -Path $onnx -Destination $enginePath
+$hdEngineName = "$((Get-Item -Path $hdOnnx).BaseName)-1080"
+$enginePath = "$pluginPath/$hdEngineName.engine"
+Copy-Item -Path $hdOnnx -Destination $enginePath
 $createEngine = !(Test-Path $enginePath)
 if (-not $createEngine) {
     # Create prompt body
@@ -141,7 +146,35 @@ if (-not $createEngine) {
     $createEngine = $response -eq 0
 }
 if ($createEngine) {
-    & "$pluginPath\trtexec" --fp16 --onnx=$onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+    & "$pluginPath\trtexec" --fp16 --onnx=$hdOnnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
+}
+
+# Copy SD ONNX and create engine
+Write-Host "Creating TensorRT engine from ONNX model $sdOnnx"
+$env:CUDA_MODULE_LOADING="LAZY"
+$sdEngineName = "$((Get-Item -Path $sdOnnx).BaseName)-720"
+$enginePath = "$pluginPath/$sdEngineName.engine"
+Copy-Item -Path $sdOnnx -Destination $enginePath
+$createEngine = !(Test-Path $enginePath)
+if (-not $createEngine) {
+    # Create prompt body
+    $title = "Confirm"
+    $message = "$enginePath already exists. Re-generate engine and replace existing engine?"
+    
+    # Create answers
+    $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Continue with the next step of the operation."
+    $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Skip this operation and proceed with the next operation."
+    
+    # Create ChoiceDescription with answers
+    $options = [System.Management.Automation.Host.ChoiceDescription[]]($yes, $no)
+
+    # Show prompt and save user's answer to variable
+    $response = $host.UI.PromptForChoice($title, $message, $options, 1)
+
+    $createEngine = $response -eq 0
+}
+if ($createEngine) {
+    & "$pluginPath\trtexec" --fp16 --onnx=$sdOnnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x720x1280 --maxShapes=input:1x3x720x1280 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 }
 
 # Extract mpv-upscale
@@ -149,9 +182,10 @@ Write-Host "Installing mpv.net custom configurations"
 Expand-Archive -Path $fileMpvUpscale -DestinationPath "."
 $sourceFolder = ".\mpv-upscale-main"
 $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
-(Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$engineName""" | Set-Content $editFile
+(Get-Content $editFile) -replace 'SD_ENGINE_NAME = .+', "SD_ENGINE_NAME = ""$sdEngineName""" | Set-Content $editFile
+(Get-Content $editFile) -replace 'HD_ENGINE_NAME = .+', "HD_ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
 $editFile = "$sourceFolder\shaders\2x_SharpLinesLite.vpy"
-(Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$engineName""" | Set-Content $editFile
+(Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$sdEngineName""" | Set-Content $editFile
 Copy-Item -Force -Path $sourceFolder\* -Destination "$env:APPDATA/mpv.net" -Recurse
 if (!(Test-Path "$env:APPDATA/mpv.net/custom.conf"))
 {
