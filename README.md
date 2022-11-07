@@ -1,8 +1,8 @@
 # mpv-upscale
 ## Installer Instructions
 1. Download `install.ps1` from this repository
-2. Download ONNX model and move to same directory as `installer.ps1`
-3. Run Powershell with Admin rights, navigate to directory containing `installer.ps1`, execute installer with command: `.\install.ps1`
+2. Download ONNX model and move to same directory as `install.ps1`
+3. Run Powershell with Admin rights, navigate to directory containing `install.ps1`, execute installer with command: `.\install.ps1`
 
 ## Manual Setup Instructions
 1. Install latest Python 3.10.x from https://www.python.org/downloads/windows/
