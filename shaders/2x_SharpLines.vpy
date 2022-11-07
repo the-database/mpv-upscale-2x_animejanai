@@ -1,8 +1,8 @@
 import vapoursynth as vs
 import os
 
-
-ENGINE_NAME = "2x_SharpLinesColorCorrectedUltraCompact_net_g_120000"
+SD_ENGINE_NAME = "Compact"
+HD_ENGINE_NAME = "UltraCompact"
 
 core = vs.core
 core.num_threads = 4  # can influence ram usage
@@ -20,9 +20,10 @@ def scaleTo1080(clip, w=1920, h=1080):
 
 
 def upscale2x(clip):
+   engine_name = SD_ENGINE_NAME if clip.height < 720 else HD_ENGINE_NAME
    return core.trt.Model(
       clip,
-      engine_path=f"{os.getenv('APPDATA')}\\VapourSynth\\plugins64\\vsmlrt-cuda\\{ENGINE_NAME}.engine",
+      engine_path=f"{os.getenv('APPDATA')}\\VapourSynth\\plugins64\\vsmlrt-cuda\\{engine_name}.engine",
       num_streams=4,
    )
 
