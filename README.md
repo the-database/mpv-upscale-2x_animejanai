@@ -1,6 +1,6 @@
 # mpv-upscale
 ## Installer Instructions
-1. Download `installer.ps1` from this repository
+1. Download `install.ps1` from this repository
 2. Download ONNX model and move to same directory as `installer.ps1`
 3. Run Powershell with Admin rights, navigate to directory containing `installer.ps1`, execute installer with command: `.\install.ps1`
 
