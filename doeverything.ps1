@@ -122,7 +122,6 @@ if ($installVsMlrt) {
 }
 
 # Copy HD ONNX and create engine
-Write-Host "Creating TensorRT engine from ONNX model $hdOnnx"
 $env:CUDA_MODULE_LOADING="LAZY"
 $hdEngineName = "$((Get-Item -Path $hdOnnx).BaseName)-1080"
 $enginePath = "$pluginPath/$hdEngineName.engine"
@@ -146,11 +145,11 @@ if (-not $createEngine) {
     $createEngine = $response -eq 0
 }
 if ($createEngine) {
+    Write-Host "Creating TensorRT engine from ONNX model $hdOnnx"
     & "$pluginPath\trtexec" --fp16 --onnx=$hdOnnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 }
 
 # Copy SD ONNX and create engine
-Write-Host "Creating TensorRT engine from ONNX model $sdOnnx"
 $env:CUDA_MODULE_LOADING="LAZY"
 $sdEngineName = "$((Get-Item -Path $sdOnnx).BaseName)-720"
 $enginePath = "$pluginPath/$sdEngineName.engine"
@@ -174,6 +173,7 @@ if (-not $createEngine) {
     $createEngine = $response -eq 0
 }
 if ($createEngine) {
+    Write-Host "Creating TensorRT engine from ONNX model $sdOnnx"
     & "$pluginPath\trtexec" --fp16 --onnx=$sdOnnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x720x1280 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 }
 
