@@ -126,7 +126,7 @@ Write-Host "Creating TensorRT engine from ONNX model $hdOnnx"
 $env:CUDA_MODULE_LOADING="LAZY"
 $hdEngineName = "$((Get-Item -Path $hdOnnx).BaseName)-1080"
 $enginePath = "$pluginPath/$hdEngineName.engine"
-Copy-Item -Path $hdOnnx -Destination $enginePath
+Copy-Item -Path $hdOnnx -Destination $pluginPath
 $createEngine = !(Test-Path $enginePath)
 if (-not $createEngine) {
     # Create prompt body
@@ -154,7 +154,7 @@ Write-Host "Creating TensorRT engine from ONNX model $sdOnnx"
 $env:CUDA_MODULE_LOADING="LAZY"
 $sdEngineName = "$((Get-Item -Path $sdOnnx).BaseName)-720"
 $enginePath = "$pluginPath/$sdEngineName.engine"
-Copy-Item -Path $sdOnnx -Destination $enginePath
+Copy-Item -Path $sdOnnx -Destination $pluginPath
 $createEngine = !(Test-Path $enginePath)
 if (-not $createEngine) {
     # Create prompt body
@@ -185,7 +185,7 @@ $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
 (Get-Content $editFile) -replace 'SD_ENGINE_NAME = .+', "SD_ENGINE_NAME = ""$sdEngineName""" | Set-Content $editFile
 (Get-Content $editFile) -replace 'HD_ENGINE_NAME = .+', "HD_ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
 $editFile = "$sourceFolder\shaders\2x_SharpLinesLite.vpy"
-(Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$sdEngineName""" | Set-Content $editFile
+(Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
 Copy-Item -Force -Path $sourceFolder\* -Destination "$env:APPDATA/mpv.net" -Recurse
 if (!(Test-Path "$env:APPDATA/mpv.net/custom.conf"))
 {
