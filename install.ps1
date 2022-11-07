@@ -160,6 +160,7 @@ if (!(Test-Path "$env:APPDATA/mpv.net/custom.conf"))
 
 
 # Cleanup
+Write-Host "Cleaning up downloaded files"
 Remove-Item -LiteralPath $sourceFolder -Force -Recurse
 Remove-Item -Path $fileMpvNet -Force
 Remove-Item -Path $fileVapourSynth -Force 
@@ -167,3 +168,4 @@ Remove-Item -Path $fileMpvUpscale -Force
 if ($installVsMlrt) {
     Remove-Item -Path $fileVsMlrt -Force
 }
+Write-Host "Done"
