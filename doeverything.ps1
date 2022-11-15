@@ -1,7 +1,7 @@
 # Test for ONNX model
 if (Test-Path *.onnx -PathType Leaf) {
     $hdOnnx = @(Get-ChildItem *UltraCompact*.onnx)[0]
-    $sdOnnx = @(Get-ChildItem *Compact*.onnx -Exclude "UltraCompact")[0]
+    $sdOnnx = @(Get-ChildItem *Compact*.onnx -Exclude "*UltraCompact*")[0]
     if ($null -eq $sdOnnx) {
         $sdOnnx = $hdOnnx
     }
