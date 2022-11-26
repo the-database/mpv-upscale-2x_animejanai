@@ -36,7 +36,7 @@ if (Get-Command -Name choco.exe -ErrorAction SilentlyContinue) {
 
 
 $pluginPath = "$env:APPDATA/VapourSynth/plugins64/vsmlrt-cuda"
-
+$mpvnetPath = "C:\mpv.net"
 
 # download Vapoursynth
 $repo = "vapoursynth/vapoursynth"
@@ -48,11 +48,16 @@ Write-Host "Downloading Vapoursynth $download"
 Start-BitsTransfer -Source $download -Destination $fileVapoursynth
 
 # download vs-mlrt
+$repo = "AmusementClub/vs-mlrt"
+$releases = "https://api.github.com/repos/$repo/releases"
+$json = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0]
+$tag = $json.tag_name
+$published = $json.published_at
 $installVsMlrt = !(Test-Path $pluginPath)
 if (-not $installVsMlrt) {
     # Create prompt body
     $title = "Confirm"
-    $message = "vs-mlrt is already installed. Reinstall latest version?"
+    $message = "vs-mlrt is already installed. Reinstall latest version $($tag) ($($published))?"
     
     # Create answers
     $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Continue with the next step of the operation."
@@ -67,9 +72,6 @@ if (-not $installVsMlrt) {
     $installVsMlrt = $response -eq 0
 }
 if ($installVsMlrt) {
-    $repo = "AmusementClub/vs-mlrt"
-    $releases = "https://api.github.com/repos/$repo/releases"
-    $tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
     $fileVsMlrt = "vsmlrt-windows-x64-cuda.$tag.7z"
     $download = "https://github.com/$repo/releases/download/$tag/$fileVsMlrt"
     Write-Host "Downloading vs-mlrt $download"
@@ -86,6 +88,16 @@ $download = "https://github.com/$repo/releases/download/$tag/$fileMpvNet"
 Write-Host "Downloading mpv.net $download"
 Start-BitsTransfer -Source $download -Destination $fileMpvNet
 
+# download yt-dlp
+$repo = "yt-dlp/yt-dlp"
+$releases = "https://api.github.com/repos/$repo/releases"
+$tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
+$version = $tag.Replace("v", "")
+$fileYtDlp = "yt-dlp.exe"
+$download = "https://github.com/$repo/releases/download/$tag/$fileYtDlp"
+Write-Host "Downloading mpv.net $download"
+Start-BitsTransfer -Source $download -Destination $fileYtDlp
+
 # download mpv-upscale
 $fileMpvUpscale = "mpv-upscale.zip"
 $download = "https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip"
@@ -95,7 +107,7 @@ Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale/archive/r
 
 # Extract mpv.net 
 Write-Host "Installing mpv.net"
-Expand-Archive -Force -Path $fileMpvNet -DestinationPath C:\mpv.net
+Expand-Archive -Force -Path $fileMpvNet -DestinationPath $mpvnetPath
 
 # Install Python 3.10
 $version = (&{python -V}).Exception.Message
@@ -104,7 +116,7 @@ if ($version -like "*3.10*" -or $version -like "*3.8*") {
 }
 else {
     Write-Host "Installing Python 3.10.8"
-    choco install -y python3 --version=3.10.8
+    choco install -y --force python3 --version=3.10.8
 }
 
 # Install VapourSynth 
@@ -177,6 +189,10 @@ if ($createEngine) {
     & "$pluginPath\trtexec" --fp16 --onnx=$sdOnnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x720x1280 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 }
 
+# Copy yt-dlp
+Write-Host "Installing yt-dlp"
+Copy-Item -Path $fileYtDlp -Destination $mpvnetPath
+
 # Extract mpv-upscale
 Write-Host "Installing mpv.net custom configurations"
 Expand-Archive -Path $fileMpvUpscale -DestinationPath "."
@@ -191,7 +207,6 @@ if (!(Test-Path "$env:APPDATA/mpv.net/custom.conf"))
 {
     New-Item -path $env:APPDATA/mpv.net -name custom.conf -type "file" 
 }
-
 
 # Cleanup
 Write-Host "Cleaning up downloaded files"
