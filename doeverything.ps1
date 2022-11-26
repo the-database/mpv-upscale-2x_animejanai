@@ -95,7 +95,7 @@ $tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_
 $version = $tag.Replace("v", "")
 $fileYtDlp = "yt-dlp.exe"
 $download = "https://github.com/$repo/releases/download/$tag/$fileYtDlp"
-Write-Host "Downloading mpv.net $download"
+Write-Host "Downloading yt-dlp $download"
 Start-BitsTransfer -Source $download -Destination $fileYtDlp
 
 # download mpv-upscale
