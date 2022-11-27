@@ -214,6 +214,7 @@ Remove-Item -LiteralPath $sourceFolder -Force -Recurse
 Remove-Item -Path $fileMpvNet -Force
 Remove-Item -Path $fileVapourSynth -Force 
 Remove-Item -Path $fileMpvUpscale -Force
+Remove-Item -Path $fileYtDlp -Force
 if ($installVsMlrt) {
     Remove-Item -Path $fileVsMlrt -Force
 }
