@@ -23,7 +23,7 @@ def upscale2x(clip):
    engine_name = SD_ENGINE_NAME if clip.height < 720 else HD_ENGINE_NAME
    return core.trt.Model(
       clip,
-      engine_path=f"{os.getenv('APPDATA')}\\VapourSynth\\plugins64\\vsmlrt-cuda\\{engine_name}.engine",
+      engine_path=f"C:\\mpv.net\\vapoursynth64\\plugins\\vsmlrt-cuda\\{engine_name}.engine",
       num_streams=4,
    )
 
