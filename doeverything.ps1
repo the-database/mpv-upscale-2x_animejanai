@@ -26,57 +26,9 @@ else {
     Install-Module -Name 7Zip4PowerShell -Force
 }
 
-# Install chocolatey
-if (Get-Command -Name choco.exe -ErrorAction SilentlyContinue) {
-    Write-Host "Chocolatey is installed"
-} else {
-    Write-Host "Installing Chocolatey"
-    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-}
-
-
-$pluginPath = "$env:APPDATA/VapourSynth/plugins64/vsmlrt-cuda"
 $mpvnetPath = "C:\mpv.net"
+$pluginPath = "$mpvnetPath/vapoursynth64/plugins/vsmlrt-cuda"
 
-# download Vapoursynth
-$repo = "vapoursynth/vapoursynth"
-$releases = "https://api.github.com/repos/$repo/releases"
-$tagVapoursynth = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
-$fileVapoursynth = "VapourSynth64-$tagVapoursynth.exe"
-$download = "https://github.com/$repo/releases/download/$tagVapoursynth/$fileVapoursynth"
-Write-Host "Downloading Vapoursynth $download"
-Start-BitsTransfer -Source $download -Destination $fileVapoursynth
-
-# download vs-mlrt
-$repo = "AmusementClub/vs-mlrt"
-$releases = "https://api.github.com/repos/$repo/releases"
-$json = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0]
-$tag = $json.tag_name
-$published = $json.published_at
-$installVsMlrt = !(Test-Path $pluginPath)
-if (-not $installVsMlrt) {
-    # Create prompt body
-    $title = "Confirm"
-    $message = "vs-mlrt is already installed. Reinstall latest version $($tag) ($($published))?"
-    
-    # Create answers
-    $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Continue with the next step of the operation."
-    $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Skip this operation and proceed with the next operation."
-    
-    # Create ChoiceDescription with answers
-    $options = [System.Management.Automation.Host.ChoiceDescription[]]($yes, $no)
-
-    # Show prompt and save user's answer to variable
-    $response = $host.UI.PromptForChoice($title, $message, $options, 1)
-
-    $installVsMlrt = $response -eq 0
-}
-if ($installVsMlrt) {
-    $fileVsMlrt = "vsmlrt-windows-x64-cuda.$tag.7z"
-    $download = "https://github.com/$repo/releases/download/$tag/$fileVsMlrt"
-    Write-Host "Downloading vs-mlrt $download"
-    Start-BitsTransfer -Source $download -Destination $fileVsMlrt
-}
 
 # download mpv.net
 $repo = "mpvnet-player/mpv.net"
@@ -88,15 +40,17 @@ $download = "https://github.com/$repo/releases/download/$tag/$fileMpvNet"
 Write-Host "Downloading mpv.net $download"
 Start-BitsTransfer -Source $download -Destination $fileMpvNet
 
-# download yt-dlp
-$repo = "yt-dlp/yt-dlp"
+# download mpv_lazy
+$repo = "hooke007/MPV_lazy"
 $releases = "https://api.github.com/repos/$repo/releases"
 $tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
-$version = $tag.Replace("v", "")
-$fileYtDlp = "yt-dlp.exe"
-$download = "https://github.com/$repo/releases/download/$tag/$fileYtDlp"
-Write-Host "Downloading yt-dlp $download"
-Start-BitsTransfer -Source $download -Destination $fileYtDlp
+$fileMpvLazy = "mpv-lazy-$tag-vsCuda.7z"
+$fileMpvLazyExe = "mpv-lazy-$tag.exe"
+$download = "https://github.com/$repo/releases/download/$tag/$fileMpvLazy"
+$downloadExe = "https://github.com/$repo/releases/download/$tag/$fileMpvLazyExe"
+Write-Host "Downloading mpv_lazy $download"
+Start-BitsTransfer -Source $downloadExe -Destination $fileMpvLazyExe
+Start-BitsTransfer -Source $download -Destination $fileMpvLazy
 
 # download mpv-upscale
 $fileMpvUpscale = "mpv-upscale.zip"
@@ -104,34 +58,17 @@ $download = "https://github.com/the-database/mpv-upscale/archive/refs/heads/main
 Write-Host "Downloading mpv.net custom configurations $download"
 Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip -Destination $fileMpvUpscale
 
+# Install mpv_lazy
+Write-Host "Installing mpv_lazy"
+Start-Process mpv-lazy-20230127.exe -ArgumentList "-y" -Wait
+Remove-Item "./mpv-lazy/portable_config" -Force -Recurse
+Expand-7Zip -ArchiveFileName $fileMpvLazy -TargetPath "./mpv-lazy" 
+Rename-Item mpv-lazy mpv.net
+Copy-Item mpv.net C:\ -Force
 
 # Extract mpv.net 
 Write-Host "Installing mpv.net"
 Expand-Archive -Force -Path $fileMpvNet -DestinationPath $mpvnetPath
-
-# Install Python 3.10
-$version = (&{python -V}).Exception.Message
-if ($version -like "*3.10*" -or $version -like "*3.8*") {
-    Write-Host "$version is installed"
-}
-else {
-    Write-Host "Installing Python 3.10.8"
-    choco install -y --force python3 --version=3.10.8
-}
-
-# Install VapourSynth 
-if ((&{vspipe -v} 2>&1) -like "*$tagVapoursynth*") {
-    Write-Host "VapourSynth $tagVapoursynth is installed"
-} else {
-    Write-Host "Installing VapourSynth - choose Install for all users"
-    Start-Process -FilePath $fileVapoursynth -Wait -PassThru -Verb runAs -ArgumentList '/s','/v"/qn"'
-}
-
-# Extract vs-mlrt
-if ($installVsMlrt) { 
-    Write-Host "Installing vs-mlrt"
-    Expand-7Zip -ArchiveFileName $fileVsMlrt -TargetPath "$env:APPDATA/VapourSynth/plugins64"
-}
 
 # Copy HD ONNX and create engine
 $env:CUDA_MODULE_LOADING="LAZY"
@@ -189,10 +126,6 @@ if ($createEngine) {
     & "$pluginPath\trtexec" --fp16 --onnx=$sdOnnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x720x1280 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 }
 
-# Copy yt-dlp
-Write-Host "Installing yt-dlp"
-Copy-Item -Path $fileYtDlp -Destination $mpvnetPath
-
 # Extract mpv-upscale
 Write-Host "Installing mpv.net custom configurations"
 Expand-Archive -Path $fileMpvUpscale -DestinationPath "."
@@ -202,20 +135,18 @@ $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
 (Get-Content $editFile) -replace 'HD_ENGINE_NAME = .+', "HD_ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
 $editFile = "$sourceFolder\shaders\2x_SharpLinesLite.vpy"
 (Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
-Copy-Item -Force -Path $sourceFolder\* -Destination "$env:APPDATA/mpv.net" -Recurse
-if (!(Test-Path "$env:APPDATA/mpv.net/custom.conf"))
+Copy-Item -Force -Path $sourceFolder\* -Destination "C:\mpv.net\portable_config" -Recurse
+if (!(Test-Path "C:\mpv.net\portable_config/custom.conf"))
 {
-    New-Item -path $env:APPDATA/mpv.net -name custom.conf -type "file" 
+    New-Item -path C:\mpv.net\portable_config -name custom.conf -type "file" 
 }
 
 # Cleanup
 Write-Host "Cleaning up downloaded files"
 Remove-Item -LiteralPath $sourceFolder -Force -Recurse
 Remove-Item -Path $fileMpvNet -Force
-Remove-Item -Path $fileVapourSynth -Force 
 Remove-Item -Path $fileMpvUpscale -Force
-Remove-Item -Path $fileYtDlp -Force
-if ($installVsMlrt) {
-    Remove-Item -Path $fileVsMlrt -Force
-}
+Remove-Item -Path $fileMpvLazy -Force
+Remove-Item -Path $fileMpvLazyExe -Force
+Remove-Item -Path "mpv.net" -Force -Recurse
 Write-Host "Done"
