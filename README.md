@@ -8,6 +8,9 @@ This project provides a PowerShell script (Windows only) to set up mpv to run ON
 
 Minimum of RTX 3080 is recommended for running UltraCompact model on 1080p in realtime; RTX 4090 is required to run Compact on 1080p in realtime. SuperUltraCompact should run in realtime on 1080p on some lower cards. The compact model is recommended on SD content. 
 
+![Sample - Original Image](s1-original.png)
+![Sample - Original Image](s1-2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000.png)
+
 Samples: https://imgsli.com/MTUxMDYx
 
 Comparisons to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjMx 
