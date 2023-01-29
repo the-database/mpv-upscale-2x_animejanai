@@ -10,7 +10,7 @@ Original: ![Sample - Original Image](s1-original.png)
 
 2x_AnimeJaNai is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended for high or medium quality 1080p anime to 4k with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. These models are not suitable for artifact-heavy or highly compressed content as they will just sharpen artifacts. The models can also work with SD anime by running the models twice. The installer in this repository can set these models up to run with mpv on Windows.
 
-| Model                                                  | Minimum GPU to Upscale 1080p Anime to 4K | Usage |
+| Model                                                  | Minimum GPU to Upscale 1080p Anime to 4K in Realtime | Usage |
 | ------------------------------------------------------ | --------------------- | ----- |
 | 2x_AnimeJaNai_Standard_V1_Compact_net_g_120000         | RTX 4090              | Most suitable for upscaling high quality SD anime to 1080p. The compact model is too slow to upscale 1080p on most cards besides the RTX 4090. Also can work well on some digital art and manga. |
 | 2x_AnimeJaNai_Strong_V1_Compact_net_g_120000           | RTX 4090              | Sharper version of the standard compact model, but may oversharpen some images. |
