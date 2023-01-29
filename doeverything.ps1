@@ -1,10 +1,29 @@
 # Test for ONNX model
 if (Test-Path *.onnx -PathType Leaf) {
-    $hdOnnx = @(Get-ChildItem *UltraCompact*.onnx)[0]
-    $sdOnnx = @(Get-ChildItem *Compact*.onnx -Exclude "*UltraCompact*")[0]
-    if ($null -eq $sdOnnx) {
-        $sdOnnx = $hdOnnx
+    $allOnnx = Get-ChildItem *.onnx
+    $onnxPrompt = ""
+    for ($counter=0; $counter -lt $allOnnx.Length; $counter++){
+        $onnxPrompt += "$($counter+1). $($allOnnx[$counter].Name)`n"
     }
+
+    $prompt = "Select ONNX model for upscaling SD content (Recommended: Compact): `n$onnxPrompt"
+    do {
+        $sdChoice = Read-Host $prompt
+        $prompt = "Invalid selection. Number must be between 1 and $($allOnnx.Length). $prompt"
+
+    } while ($sdChoice -lt 1 -or $sdChoice -gt $allOnnx.Length)
+
+    $sdOnnx = @(Get-ChildItem *.onnx)[$sdChoice-1]
+
+    $prompt = "Select ONNX model for upscaling HD content (Recommended: UltraCompact (Quality) or SubCompact (Performance)): `n$onnxPrompt"
+    do {
+        $hdChoice = Read-Host $prompt
+        $prompt = "Invalid selection. Number must be between 1 and $($allOnnx.Length). $prompt"
+
+    } while ($hdChoice -lt 1 -or $hdChoice -gt $allOnnx.Length)
+
+    $hdOnnx = @(Get-ChildItem *.onnx)[$hdChoice-1]
+    
     Write-Host "For SD content, using ONNX model $sdOnnx"
     Write-Host "For HD content, using ONNX model $hdOnnx"
 } else {
@@ -135,6 +154,7 @@ $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
 (Get-Content $editFile) -replace 'HD_ENGINE_NAME = .+', "HD_ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
 $editFile = "$sourceFolder\shaders\2x_SharpLinesLite.vpy"
 (Get-Content $editFile) -replace 'ENGINE_NAME = .+', "ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
+#Copy-Item -Force -Path $sourceFolder\* -Destination "$env:APPDATA/mpv.net" -Recurse
 Copy-Item -Force -Path $sourceFolder\* -Destination "C:\mpv.net\portable_config" -Recurse
 if (!(Test-Path "C:\mpv.net\portable_config/custom.conf"))
 {
