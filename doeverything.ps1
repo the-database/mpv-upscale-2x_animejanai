@@ -71,11 +71,11 @@ Write-Host "Downloading mpv_lazy $download"
 Start-BitsTransfer -Source $downloadExe -Destination $fileMpvLazyExe
 Start-BitsTransfer -Source $download -Destination $fileMpvLazy
 
-# download mpv-upscale
-$fileMpvUpscale = "mpv-upscale.zip"
-$download = "https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip"
+# download mpv-upscale-2x_animejanai
+$fileMpvUpscale = "mpv-upscale-2x_animejanai.zip"
+$download = "https://github.com/the-database/mpv-upscale-2x_animejanai/archive/refs/heads/main.zip"
 Write-Host "Downloading mpv.net custom configurations $download"
-Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale/archive/refs/heads/main.zip -Destination $fileMpvUpscale
+Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale-2x_animejanai/archive/refs/heads/main.zip -Destination $fileMpvUpscale
 
 # Install mpv_lazy
 Write-Host "Installing mpv_lazy"
@@ -145,10 +145,10 @@ if ($createEngine) {
     & "$pluginPath\trtexec" --fp16 --onnx=$sdOnnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x720x1280 --maxShapes=input:1x3x1080x1920 --saveEngine="$enginePath" --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT
 }
 
-# Extract mpv-upscale
+# Extract mpv-upscale-2x_animejanai
 Write-Host "Installing mpv.net custom configurations"
 Expand-Archive -Path $fileMpvUpscale -DestinationPath "."
-$sourceFolder = ".\mpv-upscale-main"
+$sourceFolder = ".\mpv-upscale-2x_animejanai-main"
 $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
 (Get-Content $editFile) -replace 'SD_ENGINE_NAME = .+', "SD_ENGINE_NAME = ""$sdEngineName""" | Set-Content $editFile
 (Get-Content $editFile) -replace 'HD_ENGINE_NAME = .+', "HD_ENGINE_NAME = ""$hdEngineName""" | Set-Content $editFile
