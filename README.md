@@ -13,9 +13,9 @@ Samples: https://imgsli.com/MTUxMDYx
 Comparisons to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjMx 
 
 ## Installer Instructions
-1. Download [`install.ps1`](https://github.com/the-database/mpv-upscale/releases/latest/download/install.ps1) from [Releases](https://github.com/the-database/mpv-upscale/releases)
-2. Download ONNX models and move to same directory as `install.ps1`
-3. Run Powershell with Admin rights, navigate to directory containing `install.ps1`, execute installer with commands: 
+1. Download and extract the [latest release](https://github.com/the-database/mpv-upscale-2x_animejanai/releases/download/1.0.0/mpv-upscale-2x_animejanai_v1.zip). 
+2. Optionally add any custom ONNX models to the extracted directory, which should contain `install.ps1`.
+3. Run Powershell with Admin rights, navigate to the extracted directory containing `install.ps1`, execute installer with commands: 
    ```
    Set-ExecutionPolicy unrestricted
    .\install.ps1
