@@ -1,19 +1,26 @@
 # mpv-upscale
 
 ## Overview
-This project provides a PowerShell script (Windows only) to set up mpv to run ONNX upscaling models in realtime with TensorRT. Originally intented to use the 2x_AnimeJaNai models but any provided ONNX model can be selected during setup. 
+This project provides a PowerShell script (Windows only) to set up mpv to run ONNX upscaling models in realtime with TensorRT (NVIDIA only). Originally intented to use the 2x_AnimeJaNai models but any provided ONNX model can be selected during setup. 
 
 ## 2x_AnimeJaNai Model
-2x_AnimeJaNai is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended for high or medium quality 1080p anime with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. These models are not suitable for artifact-heavy or highly compressed content as they will just sharpen artifacts. The models also work with SD anime by running the models twice. The installer in this repository can set these models up to run with mpv on Windows.
+Original: ![Sample - Original Image](s1-original.png)
 
-Minimum of RTX 3080 is recommended for running UltraCompact model on 1080p in realtime; RTX 4090 is required to run Compact on 1080p in realtime. SuperUltraCompact should run in realtime on 1080p on some lower cards. The compact model is recommended on SD content. 
+2x_AnimeJaNai_Strong_V1_UltraCompact: ![Sample - Original Image](s1-2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000.png)
 
-![Sample - Original Image](s1-original.png)
-![Sample - Original Image](s1-2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000.png)
+2x_AnimeJaNai is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended for high or medium quality 1080p anime to 4k with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. These models are not suitable for artifact-heavy or highly compressed content as they will just sharpen artifacts. The models can also work with SD anime by running the models twice. The installer in this repository can set these models up to run with mpv on Windows.
 
-Samples: https://imgsli.com/MTUxMDYx
+| Model                                                  | Minimum GPU for 1080p | Usage |
+| ------------------------------------------------------ | --------------------- | ----- |
+| 2x_AnimeJaNai_Standard_V1_Compact_net_g_120000         | RTX 4090              | Most suitable for upscaling high quality SD anime to 1080p. Also can work well on some digital art and manga. |
+| 2x_AnimeJaNai_Strong_V1_Compact_net_g_120000           | RTX 4090              | Sharper version of the standard compact model, but may oversharpen some images. |
+| 2x_AnimeJaNai_Standard_V1_UltraCompact_net_g_100000    | RTX 3080              | Most suitable for model for upscaling 1080p anime, especially when viewing up close to a monitor. |
+| 2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000      | RTX 3080              | Sharper version of the standard ultracompact model. May appear oversharpened when viewing up close but can work well when viewing from a distance. |
+| 2x_AnimeJaNai_Strong_V1_SuperUltraCompact_net_g_100000 | TBD. RTX 3060 Ti?     | Fastest performance model, use if running any card slower than the RTX 3080. Minimum card required has yet to be determined. |
 
-Comparisons to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjMx 
+Additional Samples: https://imgsli.com/MTUxMDYx
+
+Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjMx 
 
 ## Installer Instructions
 1. Download and extract the [latest release](https://github.com/the-database/mpv-upscale-2x_animejanai/releases/download/1.0.0/mpv-upscale-2x_animejanai_v1.zip). 
