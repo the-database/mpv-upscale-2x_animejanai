@@ -3,6 +3,15 @@
 ## Overview
 This project provides a PowerShell script (Windows only) to set up mpv to run ONNX upscaling models in realtime with TensorRT. Originally intented to use the 2x_AnimeJaNai models but any provided ONNX model can be selected during setup. 
 
+## 2x_AnimeJaNai Model
+2x_AnimeJaNai is a realtime 2x model intended for high or medium quality 1080p anime with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. It is not suitable for artifact-heavy or highly compressed content as it will just sharpen artifacts. The model also works with SD anime by running the model twice. The installer in this repository can set this model up to run with mpv on Windows.
+
+Minimum of RTX 3080 is recommended for running UltraCompact model on 1080p in realtime; RTX 4090 is required to run Compact on 1080p in realtime. SuperUltraCompact should run in realtime on 1080p on some lower cards. The compact model is recommended on SD content. 
+
+Samples: https://imgsli.com/MTUxMDYx
+
+Comparisons to Anime4K + other compact models and upscalers: https://imgsli.com/MTUxMjMx 
+
 ## Installer Instructions
 1. Download [`install.ps1`](https://github.com/the-database/mpv-upscale/releases/latest/download/install.ps1) from [Releases](https://github.com/the-database/mpv-upscale/releases)
 2. Download ONNX models and move to same directory as `install.ps1`
@@ -11,13 +20,6 @@ This project provides a PowerShell script (Windows only) to set up mpv to run ON
    Set-ExecutionPolicy unrestricted
    .\install.ps1
    ```
-## 2x_AnimeJaNai Model
-2x_AnimeJaNai is a realtime 2x model intended for high or medium quality 1080p anime with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. It is not suitable for artifact-heavy or highly compressed content as it will just sharpen artifacts. The model also works with SD anime by running the model twice. The installer in this repository can set this model up to run with mpv on Windows.
-
-Minimum of RTX 3080 is recommended for running UltraCompact model on 1080p in realtime; RTX 4090 is required to run Compact on 1080p in realtime. SuperUltraCompact should run in realtime on 1080p on some lower cards. The compact model is recommended on SD content. 
-
-Samples: https://imgsli.com/MTUxMDYx
-Comparisons to Anime4K + other compact models and upscalers: https://imgsli.com/MTUxMjMx 
 
 ## Manual Setup Instructions
 If the installer cannot be used, setup can be done manually as follows. 
