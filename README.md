@@ -12,7 +12,7 @@ Original: ![Sample - Original Image](s1-original.png)
 
 | Model                                                  | Minimum GPU for 1080p | Usage |
 | ------------------------------------------------------ | --------------------- | ----- |
-| 2x_AnimeJaNai_Standard_V1_Compact_net_g_120000         | RTX 4090              | Most suitable for upscaling high quality SD anime to 1080p. Also can work well on some digital art and manga. |
+| 2x_AnimeJaNai_Standard_V1_Compact_net_g_120000         | RTX 4090              | Most suitable for upscaling high quality SD anime to 1080p. The compact model is too slow to upscale 1080p on most cards besides the RTX 4090. Also can work well on some digital art and manga. |
 | 2x_AnimeJaNai_Strong_V1_Compact_net_g_120000           | RTX 4090              | Sharper version of the standard compact model, but may oversharpen some images. |
 | 2x_AnimeJaNai_Standard_V1_UltraCompact_net_g_100000    | RTX 3080              | Most suitable for model for upscaling 1080p anime, especially when viewing up close to a monitor. |
 | 2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000      | RTX 3080              | Sharper version of the standard ultracompact model. May appear oversharpened when viewing up close but can work well when viewing from a distance. |
