@@ -43,3 +43,6 @@ If the installer cannot be used, setup can be done manually as follows. Set up o
    1. Extract to a permanent location such as `C:\`
    2. Run `mpvnet.exe` once and then close it
 7. Download contents of this repository and extract to `%APPDATA%\mpv.net`
+
+## Support for Other Media Players
+Any media player which supports external DirectShow filters should be able to run these models, by using [avisynth_filter](https://github.com/CrendKing/avisynth_filter) to get VapourSynth running in the video player. 
