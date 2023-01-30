@@ -4,9 +4,8 @@
 This project provides a PowerShell script (Windows only) to set up mpv to run ONNX upscaling models in realtime with TensorRT (NVIDIA only). Linux and Mac may work with manual setup described below. Originally intented to use the 2x_AnimeJaNai models but any provided ONNX model can be selected during setup. 
 
 ## 2x_AnimeJaNai Model
-Original 1080p: ![Sample - Original Image](s1-original.png)
 
-2x_AnimeJaNai_Strong_V1_UltraCompact upscale to 4k: ![Sample - Original Image](s1-2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000.png)
+https://user-images.githubusercontent.com/25811902/215538361-c94d4666-668e-4709-9164-9fe605ee25f8.mp4
 
 Additional Samples: https://imgsli.com/MTUxMDYx
 
