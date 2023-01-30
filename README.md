@@ -32,7 +32,7 @@ Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compa
    ```
 
 ## Manual Setup Instructions
-If the installer cannot be used, setup can be done manually as follows. 
+If the installer cannot be used, setup can be done manually as follows. Set up on Linux or Mac should be possible with the following steps, replacing any components with their Linux or Mac equivalents, but this is untested. 
 1. Install latest Python 3.10.x from https://www.python.org/downloads/windows/
 1. Install latest Vapoursynth64 from https://github.com/vapoursynth/vapoursynth/releases
 2. Install latest pre-release vs-mlrt from https://github.com/AmusementClub/vs-mlrt/releases
