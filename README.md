@@ -5,11 +5,9 @@ This project provides a PowerShell script (Windows only) to set up mpv to run ON
 
 ## 2x_AnimeJaNai Model
 
-
+https://user-images.githubusercontent.com/25811902/215552084-99f6dc83-7b2c-40f4-ab12-5955f7097baf.mp4
 
 https://user-images.githubusercontent.com/25811902/215545373-2fe62db2-0433-447d-8980-48fc1fa45f6b.mp4
-
-
 
 Additional Samples: https://imgsli.com/MTUxMDYx
 
