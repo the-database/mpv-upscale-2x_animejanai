@@ -20,7 +20,7 @@ Original: ![Sample - Original Image](s1-original.png)
 
 Additional Samples: https://imgsli.com/MTUxMDYx
 
-Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjMx 
+Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjY4
 
 ## Installer Instructions
 1. Download and extract the [latest release](https://github.com/the-database/mpv-upscale-2x_animejanai/releases/download/1.0.0/mpv-upscale-2x_animejanai_v1.zip). 
