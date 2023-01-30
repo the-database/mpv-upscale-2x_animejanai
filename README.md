@@ -7,7 +7,11 @@ This project provides a PowerShell script (Windows only) to set up mpv to run ON
 
 
 
-https://user-images.githubusercontent.com/25811902/215539220-94e3d34f-86b9-4941-8c2e-3d3f18c1e0fe.mp4
+
+
+https://user-images.githubusercontent.com/25811902/215541731-0fa2727f-6415-4bd6-be3a-911db4fa6d82.mp4
+
+
 
 
 
