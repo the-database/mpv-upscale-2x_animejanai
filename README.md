@@ -10,7 +10,7 @@ Video Samples (Select 4K quality on YouTube)
 [![Demo 2](demothumb2.png)](https://www.youtube.com/watch?v=CzGaLGjYSpQ&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=2)
 [![Demo 1](demothumb3.png)](https://www.youtube.com/watch?v=m1WMDn4FK8I&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=3)
 
-Additional Samples: https://imgsli.com/MTUxMDYx
+Additional Screenshots: https://imgsli.com/MTUxMDYx
 
 Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjY4
 
