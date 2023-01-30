@@ -4,9 +4,9 @@
 This project provides a PowerShell script (Windows only) to set up mpv to run ONNX upscaling models in realtime with TensorRT (NVIDIA only). Linux and Mac may work with manual setup described below. Originally intented to use the 2x_AnimeJaNai models but any provided ONNX model can be selected during setup. 
 
 ## 2x_AnimeJaNai Model
-Original: ![Sample - Original Image](s1-original.png)
+Original 1080p: ![Sample - Original Image](s1-original.png)
 
-2x_AnimeJaNai_Strong_V1_UltraCompact: ![Sample - Original Image](s1-2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000.png)
+2x_AnimeJaNai_Strong_V1_UltraCompact upscale to 4k: ![Sample - Original Image](s1-2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000.png)
 
 2x_AnimeJaNai is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended for high or medium quality 1080p anime to 4k with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. These models are not suitable for artifact-heavy or highly compressed content as they will just sharpen artifacts. The models can also work with SD anime by running the models twice, first from SD to HD, and then HD to UHD. The installer in this repository can set these models up to run with mpv on Windows.
 
