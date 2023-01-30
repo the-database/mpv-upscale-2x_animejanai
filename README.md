@@ -6,7 +6,9 @@ This project provides a PowerShell script (Windows only) to set up mpv to run ON
 ## 2x_AnimeJaNai Model
 Video Samples (Select 4K quality on YouTube)
 
-
+[![Demo 3](demothumb1.png)](https://www.youtube.com/watch?v=gkE-uPPGzmA&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=1)
+[![Demo 2](demothumb2.png)](https://www.youtube.com/watch?v=CzGaLGjYSpQ&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=2)
+[![Demo 1](demothumb3.png)](https://www.youtube.com/watch?v=m1WMDn4FK8I&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=3)
 
 Additional Samples: https://imgsli.com/MTUxMDYx
 
