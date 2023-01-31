@@ -43,6 +43,9 @@ Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compa
 6. Download ONNX models and move to `mpv-lazy/vapoursynth64/plugins/vsmlrt-cuda`.
 7. Inside the `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda` run this command, replacing {MODEL_NAME} with the name of the ONNX model: ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
 8. Download contents of this repository and extract to `mpv-lazy`.
+9. Open `%APPDATA%\mpv.net\shaders\2x_SharpLines.vpy`. 
+   1. Set the HD_ENGINE_NAME and SD_ENGINE_NAME to the name of the engines you created in step 4. 
+   2. Ensure that the `engine_path` on line 26 points to the correct location. It should point to the directory where your engines were created. 
 
 ## Full Manual Setup Instructions
 If the installer cannot be used, and MPV_lazy is setup can be done manually as follows. Set up on Linux or Mac should be possible with the following steps, replacing any components with their Linux or Mac equivalents, but this is untested. 
@@ -51,11 +54,14 @@ If the installer cannot be used, and MPV_lazy is setup can be done manually as f
 2. Install latest pre-release vs-mlrt from https://github.com/AmusementClub/vs-mlrt/releases
    1. Download vsmlrt-windows-x64-cuda.v12.7z and extract contents to `%APPDATA%\VapourSynth\plugins64`
 3. Download ONNX models and move to `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda`
-4. Inside the `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda` run this command, replacing {MODEL_NAME} with the name of the ONNX model: ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
+4. Inside the `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda` run this command for each model that you want to use, replacing {MODEL_NAME} with the name of the ONNX model(s): ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
 5. Download latest beta mpv.net from https://github.com/mpvnet-player/mpv.net/releases
    1. Extract to a permanent location such as `C:\`
    2. Run `mpvnet.exe` once and then close it
 7. Download contents of this repository and extract to `%APPDATA%\mpv.net`
+8. Open `%APPDATA%\mpv.net\shaders\2x_SharpLines.vpy`. 
+   1. Set the HD_ENGINE_NAME and SD_ENGINE_NAME to the name of the engines you created in step 4. 
+   2. Ensure that the `engine_path` on line 26 points to the correct location. It should point to the directory where your engines were created. 
 
 ## Support for Other Media Players
 Any media player which supports external DirectShow filters should be able to run these models, by using [avisynth_filter](https://github.com/CrendKing/avisynth_filter) to get VapourSynth running in the video player. 
