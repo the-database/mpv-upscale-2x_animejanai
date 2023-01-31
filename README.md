@@ -34,14 +34,24 @@ Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compa
    ```
 4. Run mpv.net from `C:\mpv.net` and play any video. Upscaling is automatically applied. Toggle using `v` keyboard shortcut. 
 
-## Manual Setup Instructions
-If the installer cannot be used, setup can be done manually as follows. Set up on Linux or Mac should be possible with the following steps, replacing any components with their Linux or Mac equivalents, but this is untested. 
+## Simplified Setup Instructions using MPV_lazy
+[MPV_lazy](https://github.com/hooke007/MPV_lazy) prepackages most of the required components (Python, VapourSynth, vs-mlrt) so it simplifies the initial setup. 
+1. Download the latest MPV_lazy exe and vsCuda.7z file from the [releases page](https://github.com/hooke007/MPV_lazy/releases).
+3. Run the MPV_lazy exe to self extract into a newly created mpv-lazy directory. Move the mpv-lazy directory to a permanent location. Extract vsCuda into the same mpv-lazy directory. 
+4. Optionally, delete everything inside the portable_config directory in the mpv-lazy directory if you want to remove the mpv-lazy config customizations.
+5. Optionally, download latest beta mpv.net from https://github.com/mpvnet-player/mpv.net/releases and extract its contents to the mpv-lazy directory if you would like to use mpv.net over mpv. 
+6. Download ONNX models and move to `mpv-lazy/vapoursynth64/plugins/vsmlrt-cuda`.
+7. Inside the `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda` run this command, replacing {MODEL_NAME} with the name of the ONNX model: ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
+8. Download contents of this repository and extract to `mpv-lazy`.
+
+## Full Manual Setup Instructions
+If the installer cannot be used, and MPV_lazy is setup can be done manually as follows. Set up on Linux or Mac should be possible with the following steps, replacing any components with their Linux or Mac equivalents, but this is untested. 
 1. Install latest Python 3.10.x from https://www.python.org/downloads/windows/
 1. Install latest Vapoursynth64 from https://github.com/vapoursynth/vapoursynth/releases
 2. Install latest pre-release vs-mlrt from https://github.com/AmusementClub/vs-mlrt/releases
    1. Download vsmlrt-windows-x64-cuda.v12.7z and extract contents to `%APPDATA%\VapourSynth\plugins64`
-3. Download ONNX model and move to `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda`
-4. Run command, replacing {MODEL_NAME} with the name of the ONNX model: ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
+3. Download ONNX models and move to `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda`
+4. Inside the `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda` run this command, replacing {MODEL_NAME} with the name of the ONNX model: ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
 5. Download latest beta mpv.net from https://github.com/mpvnet-player/mpv.net/releases
    1. Extract to a permanent location such as `C:\`
    2. Run `mpvnet.exe` once and then close it
