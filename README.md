@@ -66,7 +66,7 @@ If the installer cannot be used, and MPV_lazy is setup can be done manually as f
 ## Support for Other Media Players
 Any media player which supports external DirectShow filters should be able to run these models, by using [avisynth_filter](https://github.com/CrendKing/avisynth_filter) to get VapourSynth running in the video player. 
 
-## Prerendering Videos with Other Graphics Cards
+## Prerendering Videos using Other Graphics Cards
 The 2x_AnimeJaNai_V1 ONNX models can be used on a PC with any graphics card to render upscaled videos, even when using graphics cards not fast enough for realtime playback. Any program that supports ONNX models can be used, such as [chaiNNer](https://github.com/chaiNNer-org/chaiNNer) or [VSGAN-tensorrt-docker](https://github.com/styler00dollar/VSGAN-tensorrt-docker).
 
 For NVIDIA users, the TensorRT backend is recommended for fastest rendering performance. AMD users should use the NCNN backend instead. Templates for chaiNNer are available for [NVIDIA](animejanai-nvidia.chn) and [AMD](animejanai-amd.chn) users. Simply download and open the appropriate `chn` file in chaiNNer, and select the ONNX model file and the input video file to upscale. 
