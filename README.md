@@ -32,6 +32,7 @@ Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compa
    Set-ExecutionPolicy unrestricted
    .\install.ps1
    ```
+4. Run mpv.net from `C:\mpv.net` and play any video. Upscaling is automatically applied. Toggle using `v` keyboard shortcut. 
 
 ## Manual Setup Instructions
 If the installer cannot be used, setup can be done manually as follows. Set up on Linux or Mac should be possible with the following steps, replacing any components with their Linux or Mac equivalents, but this is untested. 
