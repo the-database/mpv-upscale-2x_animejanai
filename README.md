@@ -18,7 +18,7 @@ Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compa
 
 | Model                                                  | Minimum GPU to Upscale 1080p Anime to 4K in Realtime | Usage |
 | ------------------------------------------------------ | --------------------- | ----- |
-| 2x_AnimeJaNai_Standard_V1_Compact_net_g_120000         | RTX 4090              | Most suitable for upscaling high quality SD anime to 1080p. The compact model is too slow to upscale 1080p on most cards besides the RTX 4090. Also can work well on some digital art and manga. |
+| 2x_AnimeJaNai_Standard_V1_Compact_net_g_120000         | RTX 4090              | Most suitable for upscaling high quality SD anime to 1080p. The compact model is too slow to upscale 1080p on most cards besides the RTX 4090 and is generally most suitable for prerendering videos instead. Also can work well on some digital art and manga. |
 | 2x_AnimeJaNai_Strong_V1_Compact_net_g_120000           | RTX 4090              | Sharper version of the standard compact model, but may oversharpen some images. |
 | 2x_AnimeJaNai_Standard_V1_UltraCompact_net_g_100000    | RTX 3080              | Slightly lower quality than the compact models. Most suitable for model for upscaling 1080p anime, especially when viewing up close on a monitor. The ultracompact models achieve the best balance of quality and performance. |
 | 2x_AnimeJaNai_Strong_V1_UltraCompact_net_g_100000      | RTX 3080              | Sharper version of the standard ultracompact model. May appear oversharpened when viewing up close but can work best when viewing from a distance. |
