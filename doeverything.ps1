@@ -2,7 +2,7 @@
 if (Test-Path *.onnx -PathType Leaf) {
     $allOnnx = Get-ChildItem *.onnx
     $onnxPrompt = ""
-    for ($counter=0; $counter -lt $allOnnx.Length; $counter++){
+    for ($counter=0; $counter -lt ($allOnnx | Measure-Object).Count; $counter++){
         $onnxPrompt += "$($counter+1). $($allOnnx[$counter].Name)`n"
     }
 
