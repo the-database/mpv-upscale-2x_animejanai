@@ -81,7 +81,7 @@ Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale-2x_animej
 Write-Host "Installing mpv_lazy"
 Start-Process mpv-lazy-20230127.exe -ArgumentList "-y" -Wait
 Remove-Item "./mpv-lazy/portable_config" -Force -Recurse
-Expand-7Zip -ArchiveFileName $fileMpvLazy -TargetPath "./mpv-lazy" 
+Expand-7Zip -ArchiveFileName $fileMpvLazy -TargetPath "." 
 Rename-Item mpv-lazy mpv.net
 Copy-Item mpv.net C:\ -Force
 
@@ -168,5 +168,5 @@ Remove-Item -Path $fileMpvNet -Force
 Remove-Item -Path $fileMpvUpscale -Force
 Remove-Item -Path $fileMpvLazy -Force
 Remove-Item -Path $fileMpvLazyExe -Force
-Remove-Item -Path "mpv.net" -Force -Recurse
+#Remove-Item -Path "mpv.net" -Force -Recurse
 Write-Host "Done"
