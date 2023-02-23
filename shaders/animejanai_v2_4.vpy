@@ -1,5 +1,5 @@
-import sys
-sys.path.append(r"C:\mpv.net\portable_config\shaders")
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import animejanai_v2
 
