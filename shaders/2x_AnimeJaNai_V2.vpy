@@ -48,9 +48,11 @@ def upscale2x(clip, num_streams=2):
 
 
 clip = video_in
+colorlv = clip.get_frame(0).props._ColorRange
+fmt_in = input.format.id
 
 if clip.height < 720:
-   colorspace = "170m" #TODO figure out colorspace from mpv_lazy
+   colorspace = "170m"
 
 clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s=colorspace,
    # width=clip.width/2.25,height=clip.height/2.25 # pre-downscale
@@ -78,7 +80,9 @@ if clip.height < 2160 and clip.width < 3840:
    # upscale 2x again
    clip = upscale2x(clip)
 
+fmt_out = fmt_in
+if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10, vs.YUV444P10] :
+   fmt_out = vs.YUV420P10
 
-clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s=colorspace)
-
+clip = vs.core.resize.Bicubic(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv==0 else None)
 clip.set_output()
