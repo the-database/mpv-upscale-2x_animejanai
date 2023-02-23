@@ -5,11 +5,11 @@ import os, subprocess
 # place models in {mpv_lazy folder}\vapoursynth64\plugins\vsmlrt-cuda
 
 # SD model used when upscaling videos below 720p - compact model recommended
-SD_ENGINE_NAME = "2x_AnimeJaNai_V1.13_Compact_net_g_27200"
+SD_ENGINE_NAME = "2x_AnimeJaNai_V1.13_Compact_net_g_56000"
 
 # HD model used when upscaling 720p or higher video - ultracompact (quality) 
 # or superultracompact (performance) model recommended
-HD_ENGINE_NAME = "2x_AnimeJaNai_V1.13_Compact_net_g_27200"
+HD_ENGINE_NAME = "2x_AnimeJaNai_V1.13_Compact_net_g_56000"
 
 core = vs.core
 core.num_threads = 4  # can influence ram usage
@@ -56,7 +56,7 @@ def upscale2x(clip, num_streams=2):
 
 clip = video_in
 colorlv = clip.get_frame(0).props._ColorRange
-fmt_in = input.format.id
+fmt_in = clip.format.id
 
 if clip.height < 720:
    colorspace = "170m"
