@@ -1,16 +1,6 @@
 import vapoursynth as vs
 import os, subprocess, logging
 
-# filename of ONNX models, without extension
-# place models in {mpv_lazy folder}\vapoursynth64\plugins\vsmlrt-cuda
-
-# SD model used when upscaling videos below 720p - compact model recommended
-SD_ENGINE_NAME = "2x_AnimeJaNai_V1.13_Compact_net_g_56000"
-
-# HD model used when upscaling 720p or higher video - ultracompact (quality) 
-# or superultracompact (performance) model recommended
-HD_ENGINE_NAME = "2x_AnimeJaNai_V1.13_Compact_net_g_56000"
-
 # trtexec num_streams
 TOTAL_NUM_STREAMS = 4
 
@@ -22,10 +12,13 @@ plugin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 
 # create logger with 'animejanai_v2'
+formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
+                                  datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger('animejanai_v2')
 logger.setLevel(logging.DEBUG)
 # create file handler which logs even debug messages
 fh = logging.FileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'animejanai_v2.log'))
+fh.setFormatter(formatter)
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 
@@ -64,7 +57,7 @@ def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
    engine_name = sd_engine_name if clip.height < 720 else hd_engine_name
    engine_path = os.path.join(plugin_path, f"{engine_name}.engine")
 
-   logger.debug(f"upscale2x: {engine_name}; num_streams={num_streams}")
+   logger.debug(f"upscale2x: scaling from {clip.width}x{clip.height} with engine={engine_name}; num_streams={num_streams}")
 
    if not os.path.isfile(engine_path):
       create_engine(engine_name)
