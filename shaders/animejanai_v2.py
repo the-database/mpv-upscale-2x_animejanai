@@ -57,7 +57,9 @@ def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
    engine_name = sd_engine_name if clip.height < 720 else hd_engine_name
    engine_path = os.path.join(plugin_path, f"{engine_name}.engine")
 
-   logger.debug(f"upscale2x: scaling from {clip.width}x{clip.height} with engine={engine_name}; num_streams={num_streams}")
+   message = f"upscale2x: scaling from {clip.width}x{clip.height} with engine={engine_name}; num_streams={num_streams}"
+   logger.debug(message)
+   print(message)
 
    if not os.path.isfile(engine_path):
       create_engine(engine_name)
@@ -106,7 +108,7 @@ def run_animejanai(clip, sd_engine_name, hd_engine_name):
       clip = core.std.BoxBlur(clip)
 
       # upscale 2x again
-      clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
+      # clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
 
    fmt_out = fmt_in
    if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10, vs.YUV444P10] :
