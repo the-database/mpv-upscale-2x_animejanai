@@ -108,7 +108,7 @@ def run_animejanai(clip, sd_engine_name, hd_engine_name):
       clip = core.std.BoxBlur(clip)
 
       # upscale 2x again
-      # clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
+      clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
 
    fmt_out = fmt_in
    if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10, vs.YUV444P10] :
