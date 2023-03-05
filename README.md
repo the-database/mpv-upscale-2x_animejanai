@@ -1,6 +1,8 @@
 # Upscaling Anime in mpv with 2x_AnimeJaNai
 
 ## Overview
+NOTE: V2 models are currently under development. For more information please see [#5](/../../issues/5). 
+
 This project provides a PowerShell script (Windows only) to set up mpv to run ONNX upscaling models in realtime with TensorRT (NVIDIA only). Linux and Mac may work with manual setup described below. Originally intented to use the 2x_AnimeJaNai models but any provided ONNX model can be selected during setup. 
 
 ## 2x_AnimeJaNai Model
@@ -20,8 +22,8 @@ Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compa
 |---|---|---|---|
 |  | **Compact**<br>Highest quality models which are also the sharpest and have the most detail enhancement. Requires minimum of RTX 4090 for realitime playback, so it is most suitable for pre-rendering upscales.  | **UltraCompact**<br>High quality models which trade slight quality for major performance gains. The UltraCompact models have the best balance of quality and performance. Requires minimum of RTX 3080 for realtime playback.   | **SuperUltraCompact**<br>Fastest performance models which sacrifice a bit more quality and sharpness, primarily in background detail. Use if running any card slower than the RTX 3080 for realtime playback. Minimum card required for realtime playback has yet to be determined.  |
 | **Strong**<br>Sharpest models which may oversharpen some images, but can offer a pleasant amount of sharpness when viewing from a distance on a display such as a TV or projector.  | 2x_AnimeJaNai_ Strong_V1_ Compact_net_g_120000  | 2x_AnimeJaNai_ Strong_V1_ UltraCompact_net_g_100000  |  2x_AnimeJaNai_ Strong_V1_ SuperUltraCompact_net_g_100000 |
-| **Standard**<br>Offers a middle ground in sharpness between the soft and strong models. Still includes a moderate amount of sharpening and detail enhancement, but may be too strong depending on the source video and viewing distance.   | 2x_AnimeJaNai_ Standard_V1_ Compact_net_g_120000  | 2x_AnimeJaNai_ Standard_V1_ UltraCompact_net_g_100000  | (To be released)  |
-| **Soft**<br>Softest models which should prevent oversharpening as much as possible, but has significantly reduced sharpening in backgrounds and detail enhancement. Most suited for viewing up close on a monitor.  | (To be released)  | (To be released)  | (To be released)  |
+| **Standard**<br>Offers a middle ground in sharpness between the soft and strong models. Still includes a moderate amount of sharpening and detail enhancement, but may be too strong depending on the source video and viewing distance.   | 2x_AnimeJaNai_ Standard_V1_ Compact_net_g_120000  | 2x_AnimeJaNai_ Standard_V1_ UltraCompact_net_g_100000  | ~~(To be released)~~ To be superceded by [V2](/../../issues/5)  |
+| **Soft**<br>Softest models which should prevent oversharpening as much as possible, but has significantly reduced sharpening in backgrounds and detail enhancement. Most suited for viewing up close on a monitor.  | ~~(To be released)~~ To be superseded by [V2](/../../issues/5)  | ~~(To be released)~~ To be superseded by [V2](/../../issues/5)  | ~~(To be released)~~ To be superseded by [V2](/../../issues/5)  |
 
 ## Installer Instructions
 1. Download and extract the [latest release](https://github.com/the-database/mpv-upscale-2x_animejanai/releases/download/1.0.0/mpv-upscale-2x_animejanai_v1.zip). 
