@@ -37,31 +37,34 @@ def init_logger():
 
 
 def read_config():
-    dummykey = 'config'
+    dummy_key = 'config'
+    slots_range = range(1, 10)
     bools = {
         'logging',
-        *{f'upscale_4x_{i}' for i in range(1, 10)},
-        *{f'resize_720_to_1080_before_first_2x_{i}' for i in range(1, 10)},
-        *{f'upscale_2x_{i}' for i in range(1, 10)},
-        *{f'resize_to_1080_before_second_2x_{i}' for i in range(1, 10)},
-        *{f'rife_{i}' for i in range(1, 10)}
-    }  # TODO
-    floats = {f'resize_factor_before_first_2x_{i}' for i in range(1, 10)} | \
-             {f'resize_height_before_first_2x_{i}' for i in range(1, 10)}
+        *{f'upscale_4x_{i}' for i in slots_range},
+        *{f'resize_720_to_1080_before_first_2x_{i}' for i in slots_range},
+        *{f'upscale_2x_{i}' for i in slots_range},
+        *{f'resize_to_1080_before_second_2x_{i}' for i in slots_range},
+        *{f'rife_{i}' for i in slots_range}
+    }
+    floats = {
+        *{f'resize_factor_before_first_2x_{i}' for i in slots_range},
+        *{f'resize_height_before_first_2x_{i}' for i in slots_range}
+    }
 
     parser = configparser.ConfigParser()
     conf = {}
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./animejanai_v2.conf")) as lines:
-        lines = itertools.chain((f"[{dummykey}]",), lines)
+        lines = itertools.chain((f"[{dummy_key}]",), lines)
         parser.read_file(lines)
 
-    for key in parser[dummykey]:
+    for key in parser[dummy_key]:
         if key in bools:
-            conf[key] = True if parser[dummykey][key].casefold() == 'yes'.casefold() else False
+            conf[key] = True if parser[dummy_key][key].casefold() == 'yes'.casefold() else False
         elif key in floats:
-            conf[key] = float(parser[dummykey][key])
+            conf[key] = float(parser[dummy_key][key])
         else:
-            conf[key] = parser[dummykey][key]
+            conf[key] = parser[dummy_key][key]
 
     return conf
 
@@ -114,7 +117,7 @@ def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
     )
 
 
-def run_animejanai(clip, clip_dw, clip_dh, container_fps, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
+def run_animejanai(clip, container_fps, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
                    resize_to_1080_before_second_2x, upscale_twice, use_rife):
     if do_upscale:
@@ -172,7 +175,7 @@ def run_animejanai(clip, clip_dw, clip_dh, container_fps, sd_engine_name, hd_eng
 
 
 # keybinding: 1-9
-def run_animejanai_with_keybinding(clip, clip_dw, clip_dh, container_fps, keybinding):
+def run_animejanai_with_keybinding(clip, container_fps, keybinding):
     sd_engine_name = find_model("SD", keybinding)
     hd_engine_name = find_model("HD", keybinding)
     do_upscale = config.get(f'upscale_2x_{keybinding}', True)
@@ -192,7 +195,7 @@ def run_animejanai_with_keybinding(clip, clip_dw, clip_dh, container_fps, keybin
             raise FileNotFoundError(
                 f"No HD model found for keybinding ctrl+{keybinding}. Expected to find an onnx model with filename containing 'HD-{keybinding}' in the following path: {plugin_path}")
 
-    run_animejanai(clip, clip_dw, clip_dh, container_fps, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
+    run_animejanai(clip, container_fps, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
                    resize_to_1080_before_second_2x, upscale_twice, use_rife)
 
