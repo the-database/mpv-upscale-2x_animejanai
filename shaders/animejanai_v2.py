@@ -5,6 +5,7 @@ import logging
 import configparser
 import itertools
 import sys
+from logging.handlers import RotatingFileHandler
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -18,6 +19,7 @@ core.num_threads = 4  # can influence ram usage
 
 plugin_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                            r"..\..\vapoursynth64\plugins\vsmlrt-cuda")
+model_path = os.path.join(plugin_path, r"..\models\animejanai")
 
 formatter = logging.Formatter(fmt='%(asctime)s %(levelname)-8s %(message)s',
                               datefmt='%Y-%m-%d %H:%M:%S')
@@ -29,42 +31,43 @@ config = {}
 def init_logger():
     global logger
     logger.setLevel(logging.DEBUG)
-    # create file handler which logs even debug messages
-    fh = logging.FileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'animejanai_v2.log'))
-    fh.setFormatter(formatter)
-    fh.setLevel(logging.DEBUG)
-    logger.addHandler(fh)
+    rfh = RotatingFileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'animejanai_v2.log'),
+                              mode='a', maxBytes=1 * 1024 * 1024, backupCount=2, encoding=None, delay=0)
+    rfh.setFormatter(formatter)
+    rfh.setLevel(logging.DEBUG)
+    logger.addHandler(rfh)
 
 
 def read_config():
-    dummy_key = 'config'
-    slots_range = range(1, 10)
     bools = {
         'logging',
-        *{f'upscale_4x_{i}' for i in slots_range},
-        *{f'resize_720_to_1080_before_first_2x_{i}' for i in slots_range},
-        *{f'upscale_2x_{i}' for i in slots_range},
-        *{f'resize_to_1080_before_second_2x_{i}' for i in slots_range},
-        *{f'rife_{i}' for i in slots_range}
+        'upscale_4x',
+        'resize_720_to_1080_before_first_2x',
+        'upscale_2x',
+        'resize_to_1080_before_second_2x',
+        'rife'
     }
     floats = {
-        *{f'resize_factor_before_first_2x_{i}' for i in slots_range},
-        *{f'resize_height_before_first_2x_{i}' for i in slots_range}
+        'resize_factor_before_first_2x',
+        'resize_height_before_first_2x'
     }
 
     parser = configparser.ConfigParser()
     conf = {}
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./animejanai_v2.conf")) as lines:
-        lines = itertools.chain((f"[{dummy_key}]",), lines)
-        parser.read_file(lines)
+    parser.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./animejanai_v2.conf"))
 
-    for key in parser[dummy_key]:
-        if key in bools:
-            conf[key] = True if parser[dummy_key][key].casefold() == 'yes'.casefold() else False
-        elif key in floats:
-            conf[key] = float(parser[dummy_key][key])
-        else:
-            conf[key] = parser[dummy_key][key]
+    for section in parser.sections():
+
+        if section not in conf:
+            conf[section] = {}
+
+        for key in parser[section]:
+            if key in bools:
+                conf[section][key] = True if parser[section][key].casefold() == 'yes'.casefold() else False
+            elif key in floats:
+                conf[section][key] = float(parser[section][key])
+            else:
+                conf[section][key] = parser[section][key]
 
     return conf
 
@@ -72,20 +75,25 @@ def read_config():
 # model_type: HD or SD
 # binding: 1 through 9
 def find_model(model_type, binding):
-    key = f'{model_type.lower()}_model_{binding}'
-    if key in config:
-        return config[key]
+    section_key = f'slot_{binding}'
+    key = f'{model_type.lower()}_model'
+
+    if section_key in config:
+        if key in config[section_key]:
+            return config[section_key][key]
     return None
 
 
 def create_engine(onnx_name):
-    onnx_path = os.path.join(plugin_path, f"{onnx_name}.onnx")
+    onnx_path = os.path.join(model_path, f"{onnx_name}.onnx")
     if not os.path.isfile(onnx_path):
         raise FileNotFoundError(onnx_path)
 
-    subprocess.run([os.path.join(plugin_path, "trtexec"), "--fp16", f"--onnx={onnx_name}.onnx",
+    engine_path = os.path.join(model_path, f"{onnx_name}.engine")
+
+    subprocess.run([os.path.join(plugin_path, "trtexec"), "--fp16", f"--onnx={onnx_path}",
                     "--minShapes=input:1x3x8x8", "--optShapes=input:1x3x1080x1920", "--maxShapes=input:1x3x1080x1920",
-                    f"--saveEngine={onnx_name}.engine", "--tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT"],
+                    f"--saveEngine={engine_path}", "--tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT"],
                    cwd=plugin_path)
 
 
@@ -101,7 +109,9 @@ def scale_to_1080(clip, w=1920, h=1080):
 
 def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
     engine_name = sd_engine_name if clip.height < 720 else hd_engine_name
-    engine_path = os.path.join(plugin_path, f"{engine_name}.engine")
+    if engine_name is None:
+        return clip
+    engine_path = os.path.join(model_path, f"{engine_name}.engine")
 
     message = f"upscale2x: scaling 2x from {clip.width}x{clip.height} with engine={engine_name}; num_streams={num_streams}"
     logger.debug(message)
@@ -178,22 +188,19 @@ def run_animejanai(clip, container_fps, sd_engine_name, hd_engine_name, resize_f
 def run_animejanai_with_keybinding(clip, container_fps, keybinding):
     sd_engine_name = find_model("SD", keybinding)
     hd_engine_name = find_model("HD", keybinding)
-    do_upscale = config.get(f'upscale_2x_{keybinding}', True)
-    upscale_twice = config.get(f'upscale_4x_{keybinding}', True)
-    use_rife = config.get(f'rife_{keybinding}', False)
-    resize_720_to_1080_before_first_2x = config.get(f'resize_720_to_1080_before_first_2x_{keybinding}', True)
-    resize_factor_before_first_2x = config.get(f'resize_factor_before_first_2x_{keybinding}', 1)
-    resize_height_before_first_2x = config.get(f'resize_height_before_first_2x_{keybinding}', 0)
-    resize_to_1080_before_second_2x = config.get(f'resize_to_1080_before_second_2x_{keybinding}', True)
+    section_key = f'slot_{keybinding}'
+    do_upscale = config[section_key].get(f'upscale_2x', True)
+    upscale_twice = config[section_key].get(f'upscale_4x', True)
+    use_rife = config[section_key].get(f'rife', False)
+    resize_720_to_1080_before_first_2x = config[section_key].get(f'resize_720_to_1080_before_first_2x', True)
+    resize_factor_before_first_2x = config[section_key].get(f'resize_factor_before_first_2x', 1)
+    resize_height_before_first_2x = config[section_key].get(f'resize_height_before_first_2x', 0)
+    resize_to_1080_before_second_2x = config[section_key].get(f'resize_to_1080_before_second_2x', True)
 
     if do_upscale:
-        if sd_engine_name is None:
+        if sd_engine_name is None and hd_engine_name is None:
             raise FileNotFoundError(
-                f"No SD model found for keybinding ctrl+{keybinding}. Expected to find an onnx model with filename containing 'SD-{keybinding}' in the following path: {plugin_path}")
-
-        if hd_engine_name is None:
-            raise FileNotFoundError(
-                f"No HD model found for keybinding ctrl+{keybinding}. Expected to find an onnx model with filename containing 'HD-{keybinding}' in the following path: {plugin_path}")
+                f"2x upscaling is enabled but no SD model and HD model defined for slot {keybinding}. Expected at least one of SD or HD model to be specified with sd_model or hd_model in animejanai.conf.")
 
     run_animejanai(clip, container_fps, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
@@ -203,7 +210,7 @@ def run_animejanai_with_keybinding(clip, container_fps, keybinding):
 def init():
     global config
     config = read_config()
-    if config['logging']:
+    if config['global']['logging']:
         init_logger()
 
 
