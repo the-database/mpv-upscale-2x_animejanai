@@ -19,4 +19,4 @@ import animejanai_v2
 clip = vs.core.ffms2.Source(source=r"./video.mkv")
 slot = 1
 
-animejanai_v2.run_animejanai_with_keybinding(clip, container_fps, slot)
+animejanai_v2.run_animejanai_with_keybinding(clip, slot)

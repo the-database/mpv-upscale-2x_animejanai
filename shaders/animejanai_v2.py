@@ -3,7 +3,6 @@ import os
 import subprocess
 import logging
 import configparser
-import itertools
 import sys
 from logging.handlers import RotatingFileHandler
 
@@ -127,7 +126,7 @@ def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
     )
 
 
-def run_animejanai(clip, container_fps, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
+def run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
                    resize_to_1080_before_second_2x, upscale_twice, use_rife):
     if do_upscale:
@@ -179,13 +178,13 @@ def run_animejanai(clip, container_fps, sd_engine_name, hd_engine_name, resize_f
         clip = vs.core.resize.Bicubic(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv == 0 else None)
 
     if use_rife:
-        clip = rife_cuda.rife(clip, clip.width, clip.height, container_fps)
+        clip = rife_cuda.rife(clip, clip.width, clip.height, clip.fps)
 
     clip.set_output()
 
 
 # keybinding: 1-9
-def run_animejanai_with_keybinding(clip, container_fps, keybinding):
+def run_animejanai_with_keybinding(clip, keybinding):
     sd_engine_name = find_model("SD", keybinding)
     hd_engine_name = find_model("HD", keybinding)
     section_key = f'slot_{keybinding}'
@@ -202,7 +201,7 @@ def run_animejanai_with_keybinding(clip, container_fps, keybinding):
             raise FileNotFoundError(
                 f"2x upscaling is enabled but no SD model and HD model defined for slot {keybinding}. Expected at least one of SD or HD model to be specified with sd_model or hd_model in animejanai.conf.")
 
-    run_animejanai(clip, container_fps, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
+    run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
                    resize_to_1080_before_second_2x, upscale_twice, use_rife)
 
