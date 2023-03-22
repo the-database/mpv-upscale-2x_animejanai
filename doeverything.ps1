@@ -55,9 +55,13 @@ $releases = "https://api.github.com/repos/$repo/releases"
 $tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
 $version = $tag.Replace("v", "")
 $fileMpvNet = "mpv.net-$version.zip"
-$download = "https://github.com/$repo/releases/download/$tag/$fileMpvNet"
-Write-Host "Downloading mpv.net $download"
-Start-BitsTransfer -Source $download -Destination $fileMpvNet
+
+# check if file exists before downloading
+if(-not(Test-Path $fileMpvNet)){
+    $download = "https://github.com/$repo/releases/download/$tag/$fileMpvNet"
+    Write-Host "Downloading mpv.net $download"
+    Start-BitsTransfer -Source $download -Destination $fileMpvNet
+}
 
 # download mpv_lazy
 $repo = "hooke007/MPV_lazy"
@@ -65,17 +69,26 @@ $releases = "https://api.github.com/repos/$repo/releases"
 $tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
 $fileMpvLazy = "mpv-lazy-$tag-vsCuda.7z"
 $fileMpvLazyExe = "mpv-lazy-$tag.exe"
-$download = "https://github.com/$repo/releases/download/$tag/$fileMpvLazy"
-$downloadExe = "https://github.com/$repo/releases/download/$tag/$fileMpvLazyExe"
-Write-Host "Downloading mpv_lazy $download"
-Start-BitsTransfer -Source $downloadExe -Destination $fileMpvLazyExe
-Start-BitsTransfer -Source $download -Destination $fileMpvLazy
+
+# check if files exist before downloading
+if((-not(Test-Path $fileMpvLazy)) -or (-not(Test-Path $fileMpvLazyExe))){
+    $download = "https://github.com/$repo/releases/download/$tag/$fileMpvLazy"
+    $downloadExe = "https://github.com/$repo/releases/download/$tag/$fileMpvLazyExe"
+    Write-Host "Downloading mpv_lazy $download"
+    Start-BitsTransfer -Source $downloadExe -Destination $fileMpvLazyExe
+    Start-BitsTransfer -Source $download -Destination $fileMpvLazy
+}
 
 # download mpv-upscale-2x_animejanai
 $fileMpvUpscale = "mpv-upscale-2x_animejanai.zip"
-$download = "https://github.com/the-database/mpv-upscale-2x_animejanai/archive/refs/heads/main.zip"
-Write-Host "Downloading mpv.net custom configurations $download"
-Start-BitsTransfer -Source https://github.com/the-database/mpv-upscale-2x_animejanai/archive/refs/heads/main.zip -Destination $fileMpvUpscale
+
+# check if file exists before downloading and use web request instead of bits transfer because dynamic zip
+if(-not(Test-Path $fileMpvUpscale)){
+    $url = "https://github.com/the-database/mpv-upscale-2x_animejanai/archive/refs/heads/main.zip"
+    $output = $fileMpvUpscale
+    Write-Host "Downloading mpv.net custom configurations $download"
+    Invoke-WebRequest -Uri $url -OutFile $output
+}
 
 # Install mpv_lazy
 Write-Host "Installing mpv_lazy"
@@ -83,7 +96,7 @@ Start-Process mpv-lazy-20230127.exe -ArgumentList "-y" -Wait
 Remove-Item "./mpv-lazy/portable_config" -Force -Recurse
 Expand-7Zip -ArchiveFileName $fileMpvLazy -TargetPath "." 
 Rename-Item mpv-lazy mpv.net
-Copy-Item mpv.net C:\ -Force
+Copy-Item -Path ".\mpv.net" -Destination "C:\" -Recurse -Force
 
 # Extract mpv.net 
 Write-Host "Installing mpv.net"
@@ -148,6 +161,7 @@ if ($createEngine) {
 # Extract mpv-upscale-2x_animejanai
 Write-Host "Installing mpv.net custom configurations"
 Expand-Archive -Path $fileMpvUpscale -DestinationPath "."
+Write-Host "Finished expand-archive"
 $sourceFolder = ".\mpv-upscale-2x_animejanai-main"
 $editFile = "$sourceFolder\shaders\2x_SharpLines.vpy"
 (Get-Content $editFile) -replace 'SD_ENGINE_NAME = .+', "SD_ENGINE_NAME = ""$sdEngineName""" | Set-Content $editFile
@@ -162,11 +176,11 @@ if (!(Test-Path "C:\mpv.net\portable_config/custom.conf"))
 }
 
 # Cleanup
-Write-Host "Cleaning up downloaded files"
-Remove-Item -LiteralPath $sourceFolder -Force -Recurse
-Remove-Item -Path $fileMpvNet -Force
-Remove-Item -Path $fileMpvUpscale -Force
-Remove-Item -Path $fileMpvLazy -Force
-Remove-Item -Path $fileMpvLazyExe -Force
+#Write-Host "Cleaning up downloaded files"
+#Remove-Item -LiteralPath $sourceFolder -Force -Recurse
+#Remove-Item -Path $fileMpvNet -Force
+#Remove-Item -Path $fileMpvUpscale -Force
+#Remove-Item -Path $fileMpvLazy -Force
+#Remove-Item -Path $fileMpvLazyExe -Force
 #Remove-Item -Path "mpv.net" -Force -Recurse
 Write-Host "Done"
