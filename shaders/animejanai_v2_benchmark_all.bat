@@ -1,0 +1,1 @@
+..\..\python.exe ./animejanai_v2_benchmark_all.py
