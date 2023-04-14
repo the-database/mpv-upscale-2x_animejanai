@@ -9,6 +9,8 @@ from logging.handlers import RotatingFileHandler
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import rife_cuda
+import animejanai_v2_config
+# import gmfss_cuda
 
 # trtexec num_streams
 TOTAL_NUM_STREAMS = 4
@@ -35,40 +37,6 @@ def init_logger():
     rfh.setFormatter(formatter)
     rfh.setLevel(logging.DEBUG)
     logger.addHandler(rfh)
-
-
-def read_config():
-    bools = {
-        'logging',
-        'upscale_4x',
-        'resize_720_to_1080_before_first_2x',
-        'upscale_2x',
-        'resize_to_1080_before_second_2x',
-        'rife'
-    }
-    floats = {
-        'resize_factor_before_first_2x',
-        'resize_height_before_first_2x'
-    }
-
-    parser = configparser.ConfigParser()
-    conf = {}
-    parser.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "./animejanai_v2.conf"))
-
-    for section in parser.sections():
-
-        if section not in conf:
-            conf[section] = {}
-
-        for key in parser[section]:
-            if key in bools:
-                conf[section][key] = True if parser[section][key].casefold() == 'yes'.casefold() else False
-            elif key in floats:
-                conf[section][key] = float(parser[section][key])
-            else:
-                conf[section][key] = parser[section][key]
-
-    return conf
 
 
 # model_type: HD or SD
@@ -128,7 +96,7 @@ def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
 
 def run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                   resize_to_1080_before_second_2x, upscale_twice, use_rife):
+                   resize_to_1080_before_second_2x, upscale_twice, use_rife, use_gmfss):
     if do_upscale:
         colorspace = "709"
         colorlv = clip.get_frame(0).props._ColorRange
@@ -180,6 +148,9 @@ def run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_fi
     if use_rife:
         clip = rife_cuda.rife(clip, clip.width, clip.height, clip.fps)
 
+    if use_gmfss:
+        clip = gmfss_cuda.gmfss(clip)
+
     clip.set_output()
 
 
@@ -191,6 +162,7 @@ def run_animejanai_with_keybinding(clip, keybinding):
     do_upscale = config[section_key].get(f'upscale_2x', True)
     upscale_twice = config[section_key].get(f'upscale_4x', True)
     use_rife = config[section_key].get(f'rife', False)
+    use_gmfss = config[section_key].get(f'gmfss', False)
     resize_720_to_1080_before_first_2x = config[section_key].get(f'resize_720_to_1080_before_first_2x', True)
     resize_factor_before_first_2x = config[section_key].get(f'resize_factor_before_first_2x', 1)
     resize_height_before_first_2x = config[section_key].get(f'resize_height_before_first_2x', 0)
@@ -203,12 +175,12 @@ def run_animejanai_with_keybinding(clip, keybinding):
 
     run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                   resize_to_1080_before_second_2x, upscale_twice, use_rife)
+                   resize_to_1080_before_second_2x, upscale_twice, use_rife, use_gmfss)
 
 
 def init():
     global config
-    config = read_config()
+    config = animejanai_v2_config.read_config()
     if config['global']['logging']:
         init_logger()
 

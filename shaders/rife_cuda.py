@@ -13,7 +13,7 @@ def rife(clip, clip_dw, clip_dh, container_fps):
 
     interpMulti = 2 			# frame rate (integer)
     if clip_dh <= 720: interpMulti = 6
-    elif clip_dh <= 1080: interpMulti = 3
+    elif clip_dh <= 1080: interpMulti = 2
     GPU = 0 							# The serial number of the graphics card used, 0 is sorted number one
     GPU_t = 3 						# Number of graphics card threads used
     WS_size = 2048        # Constrained video memory size

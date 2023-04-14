@@ -16,7 +16,17 @@ import animejanai_v2
 # 4. Run the following command from the main mpv directory:
 #     .\VSPipe.exe --start 0 --end 2000 ./portable_config/shaders/animejanai_v2_benchmark.vpy -p .
 
-clip = vs.core.ffms2.Source(source=r"./video.mkv")
-slot = 1
+required_args = {'slot', 'video_path'}
+
+args = dict(globals())
+
+for arg in required_args:
+    if arg not in args:
+        print(f"{arg} is a required argument")
+        sys.exit(1)
+
+video_path = os.path.abspath(args['video_path'])
+clip = vs.core.ffms2.Source(source=video_path)
+slot = int(args['slot'])
 
 animejanai_v2.run_animejanai_with_keybinding(clip, slot)
