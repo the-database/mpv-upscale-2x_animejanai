@@ -64,17 +64,21 @@ for filename in os.listdir('./benchmarks'):
             if basename in table[key]:
                 continue
 
+            print(f'{basename} {scale} {key}: Benchmarking')
+
             p = subprocess.run([os.path.join(mpv_path, "vspipe.exe"), "--arg", f"video_path=benchmarks\\{filename}",
                                 "--arg", f"slot={slot}", "--start", "0", "--end", "500",
                                 "./portable_config/shaders/animejanai_v2_benchmark.vpy",
-                                "-p", "."], cwd=mpv_path, capture_output=True)
+                                "-p", "."], cwd=mpv_path, capture_output=True, text=True)
             # Output x frames in y seconds (z fps)
-            outputline = p.stderr.decode().splitlines()[-1]
-            resultfps = re.search(r'\((.+)\)', outputline).group(1)
-
-            print(basename, scale, key, resultfps)
-
-            table[key][basename] = [basename, scale, height, key, resultfps]
+            outputline = p.stderr.splitlines()[-1]
+            try:
+                resultfps = re.search(r'\((.+)\)', outputline).group(1)
+                print(f'{basename} {scale} {key}: {resultfps}')
+                table[key][basename] = [basename, scale, height, key, resultfps]
+            except AttributeError:
+                print(p.stderr)
+                exit(1)
 
 end = time.time()
 print(f'Completed in {end - start:.2f} seconds.')
