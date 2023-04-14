@@ -96,7 +96,7 @@ def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
 
 def run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                   resize_to_1080_before_second_2x, upscale_twice, use_rife, use_gmfss):
+                   resize_to_1080_before_second_2x, upscale_twice, use_rife):
     if do_upscale:
         colorspace = "709"
         colorlv = clip.get_frame(0).props._ColorRange
@@ -108,51 +108,67 @@ def run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_fi
         if resize_height_before_first_2x != 0:
             resize_factor_before_first_2x = 1
 
-        clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s=colorspace,
-                                      width=clip.width/resize_factor_before_first_2x,
-                                      height=clip.height/resize_factor_before_first_2x)
+        try:
+            # try half precision first
+            clip = vs.core.resize.Bicubic(clip, format=vs.RGBH, matrix_in_s=colorspace,
+                                          width=clip.width/resize_factor_before_first_2x,
+                                          height=clip.height/resize_factor_before_first_2x)
 
-        if resize_height_before_first_2x != 0:
-            clip = scale_to_1080(clip, resize_height_before_first_2x * 16 / 9, resize_height_before_first_2x)
-
-        # pre-scale 720p or higher to 1080
-        if resize_720_to_1080_before_first_2x:
-            if (clip.height >= 720 or clip.width >= 1280) and clip.height < 1080 and clip.width < 1920:
-                clip = scale_to_1080(clip)
-
-        upscale_twice = upscale_twice and clip.height < 1080 and clip.width < 1920
-        num_streams = TOTAL_NUM_STREAMS
-        if upscale_twice:
-            num_streams /= 2
-
-        # upscale 2x
-        clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
-
-        # upscale 2x again if necessary
-        if upscale_twice:
-            # downscale down to 1080 if first 2x went over 1080,
-            # or scale up to 1080 if enabled
-            if resize_to_1080_before_second_2x or clip.height > 1080 or clip.width > 1920:
-                clip = scale_to_1080(clip)
-
-            # upscale 2x again
-            clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
-
-        fmt_out = fmt_in
-        if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10,
-                          vs.YUV444P10]:
-            fmt_out = vs.YUV420P10
-
-        clip = vs.core.resize.Bicubic(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv == 0 else None)
+            clip = run_animejanai_upscale(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
+                                          resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
+                                          resize_to_1080_before_second_2x, upscale_twice, use_rife, colorspace, colorlv,
+                                          fmt_in)
+        except:
+            clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s=colorspace,
+                                          width=clip.width/resize_factor_before_first_2x,
+                                          height=clip.height/resize_factor_before_first_2x)
+            clip = run_animejanai_upscale(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
+                                          resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
+                                          resize_to_1080_before_second_2x, upscale_twice, use_rife, colorspace, colorlv,
+                                          fmt_in)
 
     if use_rife:
         clip = rife_cuda.rife(clip, clip.width, clip.height, clip.fps)
 
-    if use_gmfss:
-        clip = gmfss_cuda.gmfss(clip)
-
     clip.set_output()
 
+
+def run_animejanai_upscale(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
+                          resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
+                          resize_to_1080_before_second_2x, upscale_twice, use_rife, colorspace, colorlv, fmt_in):
+
+    if resize_height_before_first_2x != 0:
+        clip = scale_to_1080(clip, resize_height_before_first_2x * 16 / 9, resize_height_before_first_2x)
+
+    # pre-scale 720p or higher to 1080
+    if resize_720_to_1080_before_first_2x:
+        if (clip.height >= 720 or clip.width >= 1280) and clip.height < 1080 and clip.width < 1920:
+            clip = scale_to_1080(clip)
+
+    upscale_twice = upscale_twice and clip.height < 1080 and clip.width < 1920
+    num_streams = TOTAL_NUM_STREAMS
+    if upscale_twice:
+        num_streams /= 2
+
+    # upscale 2x
+    clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
+
+    # upscale 2x again if necessary
+    if upscale_twice:
+        # downscale down to 1080 if first 2x went over 1080,
+        # or scale up to 1080 if enabled
+        if resize_to_1080_before_second_2x or clip.height > 1080 or clip.width > 1920:
+            clip = scale_to_1080(clip)
+
+        # upscale 2x again
+        clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
+
+    fmt_out = fmt_in
+    if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10,
+                      vs.YUV444P10]:
+        fmt_out = vs.YUV420P10
+
+    return vs.core.resize.Bicubic(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv == 0 else None)
 
 # keybinding: 1-9
 def run_animejanai_with_keybinding(clip, keybinding):
@@ -162,7 +178,6 @@ def run_animejanai_with_keybinding(clip, keybinding):
     do_upscale = config[section_key].get(f'upscale_2x', True)
     upscale_twice = config[section_key].get(f'upscale_4x', True)
     use_rife = config[section_key].get(f'rife', False)
-    use_gmfss = config[section_key].get(f'gmfss', False)
     resize_720_to_1080_before_first_2x = config[section_key].get(f'resize_720_to_1080_before_first_2x', True)
     resize_factor_before_first_2x = config[section_key].get(f'resize_factor_before_first_2x', 1)
     resize_height_before_first_2x = config[section_key].get(f'resize_height_before_first_2x', 0)
@@ -175,7 +190,7 @@ def run_animejanai_with_keybinding(clip, keybinding):
 
     run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
                    resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                   resize_to_1080_before_second_2x, upscale_twice, use_rife, use_gmfss)
+                   resize_to_1080_before_second_2x, upscale_twice, use_rife)
 
 
 def init():
