@@ -138,6 +138,8 @@ def run_animejanai_upscale(clip, model_conf):
     if model_conf['resize_height_before_upscale'] != 0:
         clip = scale_to_1080(clip, model_conf['resize_height_before_upscale'] * 16 / 9,
                              model_conf['resize_height_before_upscale'])
+    elif clip.height > 1080:
+        clip = scale_to_1080(clip)
 
     # upscale 2x
     return upscale2x(clip, model_conf['name'], TOTAL_NUM_STREAMS)

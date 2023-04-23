@@ -29,4 +29,4 @@ video_path = os.path.abspath(args['video_path'])
 clip = vs.core.ffms2.Source(source=video_path)
 slot = int(args['slot'])
 
-animejanai_v2.run_animejanai_with_keybinding(clip, slot)
+animejanai_v2.run_animejanai_with_keybinding(clip, clip.fps, slot)

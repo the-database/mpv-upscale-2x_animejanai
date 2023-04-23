@@ -1,17 +1,27 @@
-import os, subprocess, sys, re, pathlib
+import os
+import pathlib
+import re
+import subprocess
+import sys
+import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import animejanai_v2_config
-import time
 
 table = {}
 
 
-def get_engine(conf, height):
-    model = conf['sd_model'] if height < 720 else conf['hd_model']
-    m = re.search(r'_([a-zA-Z]*Compact)[_-]', model)
-    return f'2x_{m.group(1)}' if m is not None else model
+def get_chain_conf(conf, height):
+    for chain_conf in conf.values():
+        if chain_conf['min_height'] <= height <= chain_conf['max_height']:
+            return chain_conf
+    return None
+
+
+def get_engine(chain_conf):
+    matches = [re.search(r'_([a-zA-Z]*Compact)[_-]', m['name']) for m in chain_conf['models']]
+    return '+'.join([f'2x_{m.group(1)}' if m is not None else chain_conf['models'][i]['name'] for i, m in enumerate(matches)])
 
 
 def printtable(table):
@@ -49,14 +59,14 @@ for filename in os.listdir('./benchmarks'):
     if not filename.endswith('.ffindex'):
         for slot in slots:
             conf = config[f'slot_{slot}']
-            if conf['upscale_4x'] and filename.startswith('1920x1080'):
-                continue
 
             basename = pathlib.Path(filename).stem
             resolution = basename.split('x')
             height = int(resolution[1])
-            key = f"({get_engine(conf, height)}{'+' + get_engine(conf, height * 2) if conf['upscale_4x'] else ''})"
-            scale = '4x' if conf['upscale_4x'] else '2x'
+            chain_conf = get_chain_conf(conf, height)
+            key = f"({get_engine(chain_conf)})"
+
+            scale = f'{len(chain_conf["models"])*2}x'
 
             if key not in table:
                 table[key] = {}
