@@ -2,7 +2,6 @@ import vapoursynth as vs
 import os
 import subprocess
 import logging
-import configparser
 import sys
 from logging.handlers import RotatingFileHandler
 
@@ -10,7 +9,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import rife_cuda
 import animejanai_v2_config
-# import gmfss_cuda
 
 # trtexec num_streams
 TOTAL_NUM_STREAMS = 4
@@ -60,6 +58,7 @@ def create_engine(onnx_name):
 
     subprocess.run([os.path.join(plugin_path, "trtexec"), "--fp16", f"--onnx={onnx_path}",
                     "--minShapes=input:1x3x8x8", "--optShapes=input:1x3x1080x1920", "--maxShapes=input:1x3x1080x1920",
+                    "--skipInference", "--infStreams=4", "--builderOptimizationLevel=4",
                     f"--saveEngine={engine_path}", "--tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT"],
                    cwd=plugin_path)
 
@@ -74,8 +73,7 @@ def scale_to_1080(clip, w=1920, h=1080):
     return vs.core.resize.Bicubic(clip, width=prescalewidth, height=prescaleheight)
 
 
-def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
-    engine_name = sd_engine_name if clip.height < 720 else hd_engine_name
+def upscale2x(clip, engine_name, num_streams):
     if engine_name is None:
         return clip
     engine_path = os.path.join(model_path, f"{engine_name}.engine")
@@ -94,103 +92,69 @@ def upscale2x(clip, sd_engine_name, hd_engine_name, num_streams):
     )
 
 
-def run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
-                   resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                   resize_to_1080_before_second_2x, upscale_twice, use_rife):
-    if do_upscale:
-        colorspace = "709"
-        colorlv = clip.get_frame(0).props._ColorRange
-        fmt_in = clip.format.id
+def run_animejanai(clip, container_fps, chain_conf):
+    models = chain_conf.get('models', [])
+    colorspace = "709"
+    colorlv = clip.get_frame(0).props._ColorRange
+    fmt_in = clip.format.id
 
+    if len(models) > 0:
         if clip.height < 720:
             colorspace = "170m"
 
-        if resize_height_before_first_2x != 0:
-            resize_factor_before_first_2x = 1
+        for model_conf in models:
 
-        try:
-            # try half precision first
-            clip = vs.core.resize.Bicubic(clip, format=vs.RGBH, matrix_in_s=colorspace,
-                                          width=clip.width/resize_factor_before_first_2x,
-                                          height=clip.height/resize_factor_before_first_2x)
+            resize_factor_before_upscale = model_conf['resize_factor_before_upscale']
+            if model_conf['resize_height_before_upscale'] != 0:
+                resize_factor_before_upscale = 1
 
-            clip = run_animejanai_upscale(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
-                                          resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                                          resize_to_1080_before_second_2x, upscale_twice, use_rife, colorspace, colorlv,
-                                          fmt_in)
-        except:
-            clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s=colorspace,
-                                          width=clip.width/resize_factor_before_first_2x,
-                                          height=clip.height/resize_factor_before_first_2x)
-            clip = run_animejanai_upscale(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
-                                          resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                                          resize_to_1080_before_second_2x, upscale_twice, use_rife, colorspace, colorlv,
-                                          fmt_in)
+            try:
+                clip = vs.core.resize.Bicubic(clip, format=vs.RGBH, matrix_in_s=colorspace,
+                                              width=clip.width / resize_factor_before_upscale,
+                                              height=clip.height / resize_factor_before_upscale)
 
-    if use_rife:
-        clip = rife_cuda.rife(clip, clip.width, clip.height, clip.fps)
+                clip = run_animejanai_upscale(clip, model_conf)
+            except:
+                clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s=colorspace,
+                                              width=clip.width / resize_factor_before_upscale,
+                                              height=clip.height / resize_factor_before_upscale)
 
-    clip.set_output()
+                clip = run_animejanai_upscale(clip, model_conf)
 
-
-def run_animejanai_upscale(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
-                          resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                          resize_to_1080_before_second_2x, upscale_twice, use_rife, colorspace, colorlv, fmt_in):
-
-    if resize_height_before_first_2x != 0:
-        clip = scale_to_1080(clip, resize_height_before_first_2x * 16 / 9, resize_height_before_first_2x)
-
-    # pre-scale 720p or higher to 1080
-    if resize_720_to_1080_before_first_2x:
-        if (clip.height >= 720 or clip.width >= 1280) and clip.height < 1080 and clip.width < 1920:
-            clip = scale_to_1080(clip)
-
-    upscale_twice = upscale_twice and clip.height < 1080 and clip.width < 1920
-    num_streams = TOTAL_NUM_STREAMS
-    if upscale_twice:
-        num_streams /= 2
-
-    # upscale 2x
-    clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
-
-    # upscale 2x again if necessary
-    if upscale_twice:
-        # downscale down to 1080 if first 2x went over 1080,
-        # or scale up to 1080 if enabled
-        if resize_to_1080_before_second_2x or clip.height > 1080 or clip.width > 1920:
-            clip = scale_to_1080(clip)
-
-        # upscale 2x again
-        clip = upscale2x(clip, sd_engine_name, hd_engine_name, num_streams)
+    if chain_conf['rife']:
+        clip = rife_cuda.rife(clip, clip.width, clip.height, container_fps)
 
     fmt_out = fmt_in
     if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10,
                       vs.YUV444P10]:
         fmt_out = vs.YUV420P10
 
-    return vs.core.resize.Bicubic(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv == 0 else None)
+    clip = vs.core.resize.Bicubic(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv == 0 else None)
+
+    clip.set_output()
+
+
+def run_animejanai_upscale(clip, model_conf):
+    if model_conf['resize_height_before_upscale'] != 0:
+        clip = scale_to_1080(clip, model_conf['resize_height_before_upscale'] * 16 / 9,
+                             model_conf['resize_height_before_upscale'])
+
+    # upscale 2x
+    return upscale2x(clip, model_conf['name'], TOTAL_NUM_STREAMS)
+
 
 # keybinding: 1-9
-def run_animejanai_with_keybinding(clip, keybinding):
-    sd_engine_name = find_model("SD", keybinding)
-    hd_engine_name = find_model("HD", keybinding)
+def run_animejanai_with_keybinding(clip, container_fps, keybinding):
     section_key = f'slot_{keybinding}'
-    do_upscale = config[section_key].get(f'upscale_2x', True)
-    upscale_twice = config[section_key].get(f'upscale_4x', True)
-    use_rife = config[section_key].get(f'rife', False)
-    resize_720_to_1080_before_first_2x = config[section_key].get(f'resize_720_to_1080_before_first_2x', True)
-    resize_factor_before_first_2x = config[section_key].get(f'resize_factor_before_first_2x', 1)
-    resize_height_before_first_2x = config[section_key].get(f'resize_height_before_first_2x', 0)
-    resize_to_1080_before_second_2x = config[section_key].get(f'resize_to_1080_before_second_2x', True)
 
-    if do_upscale:
-        if sd_engine_name is None and hd_engine_name is None:
-            raise FileNotFoundError(
-                f"2x upscaling is enabled but no SD model and HD model defined for slot {keybinding}. Expected at least one of SD or HD model to be specified with sd_model or hd_model in animejanai.conf.")
+    for chain_conf in config[section_key].values():
+        # Run the first chain which the video fits the criteria for, if any
+        if chain_conf['min_height'] <= clip.height <= chain_conf['max_height'] and \
+                chain_conf['min_fps'] <= container_fps <= chain_conf['max_fps']:
+            run_animejanai(clip, container_fps, chain_conf)
+            return
 
-    run_animejanai(clip, sd_engine_name, hd_engine_name, resize_factor_before_first_2x,
-                   resize_height_before_first_2x, resize_720_to_1080_before_first_2x, do_upscale,
-                   resize_to_1080_before_second_2x, upscale_twice, use_rife)
+    clip.set_output()
 
 
 def init():

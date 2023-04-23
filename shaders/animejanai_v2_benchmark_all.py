@@ -78,7 +78,7 @@ for filename in os.listdir('./benchmarks'):
                 table[key][basename] = [basename, scale, height, key, resultfps]
             except AttributeError:
                 print(p.stderr)
-                exit(1)
+                sys.exit(1)
 
 end = time.time()
 print(f'Completed in {end - start:.2f} seconds.')
