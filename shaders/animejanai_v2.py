@@ -151,7 +151,7 @@ def run_animejanai_with_keybinding(clip, container_fps, keybinding):
 
     for chain_conf in config[section_key].values():
         # Run the first chain which the video fits the criteria for, if any
-        if chain_conf['min_height'] <= clip.height <= chain_conf['max_height'] and \
+        if chain_conf['min_px'] <= clip.width * clip.height <= chain_conf['max_px'] and \
                 chain_conf['min_fps'] <= container_fps <= chain_conf['max_fps']:
             run_animejanai(clip, container_fps, chain_conf)
             return

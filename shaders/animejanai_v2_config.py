@@ -46,9 +46,15 @@ def parse_bool(value):
 
 
 def read_config_by_chain(flat_conf, section, chain, num_models):
+    min_resolution = flat_conf[section].get(f'chain_{chain}_min_resolution', '0x0')
+    max_resolution = flat_conf[section].get(f'chain_{chain}_max_resolution', 'infxinf')
+
+    min_width, min_height = [float(px) for px in min_resolution.split('x')]
+    max_width, max_height = [float(px) for px in max_resolution.split('x')]
+
     return {
-        'min_height': float(flat_conf[section].get(f'chain_{chain}_min_height', 0)),
-        'max_height': float(flat_conf[section].get(f'chain_{chain}_max_height', "inf")),
+        'min_px': min_width * min_height,
+        'max_px': max_width * max_height,
         'min_fps': float(flat_conf[section].get(f'chain_{chain}_min_fps', 0)),
         'max_fps': float(flat_conf[section].get(f'chain_{chain}_max_fps', "inf")),
         'models': [read_config_by_chain_model(flat_conf, section, chain, i) for i in range(1, num_models + 1)],
