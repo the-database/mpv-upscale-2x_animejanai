@@ -67,7 +67,7 @@ if(-not(Test-Path $fileMpvNet)){
 $repo = "hooke007/MPV_lazy"
 $releases = "https://api.github.com/repos/$repo/releases"
 $tag = (Invoke-WebRequest -UseBasicParsing $releases | ConvertFrom-Json)[0].tag_name
-$fileMpvLazy = "mpv-lazy-$tag-vsCuda.7z"
+$fileMpvLazy = "mpv-lazy-$tag-vsMega.7z"
 $fileMpvLazyExe = "mpv-lazy-$tag.exe"
 
 # check if files exist before downloading

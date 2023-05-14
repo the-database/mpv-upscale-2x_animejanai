@@ -37,8 +37,8 @@ Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compa
 
 ## Simplified Setup Instructions using MPV_lazy
 [MPV_lazy](https://github.com/hooke007/MPV_lazy) prepackages most of the required components (Python, VapourSynth, vs-mlrt) so it simplifies the initial setup. 
-1. Download the latest MPV_lazy exe and vsCuda.7z file from the [releases page](https://github.com/hooke007/MPV_lazy/releases).
-3. Run the MPV_lazy exe to self extract into a newly created mpv-lazy directory. Move the mpv-lazy directory to a permanent location. Extract vsCuda into the same mpv-lazy directory. 
+1. Download the latest MPV_lazy exe and vsMega.7z file from the [releases page](https://github.com/hooke007/MPV_lazy/releases).
+3. Run the MPV_lazy exe to self extract into a newly created mpv-lazy directory. Move the mpv-lazy directory to a permanent location. Extract vsMega into the same mpv-lazy directory. 
 4. Optionally, delete everything inside the portable_config directory in the mpv-lazy directory if you want to remove the mpv-lazy config customizations.
 5. Optionally, download latest beta mpv.net from https://github.com/mpvnet-player/mpv.net/releases and extract its contents to the mpv-lazy directory if you would like to use mpv.net over mpv. 
 6. Download ONNX models and move to `mpv-lazy/vapoursynth64/plugins/vsmlrt-cuda`.
