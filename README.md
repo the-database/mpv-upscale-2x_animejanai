@@ -6,9 +6,12 @@
 This project provides a set of Real-ESRGAN Compact ONNX upscaling models, and a custom build of mpv video player (currently Windows only) which supports realtime upscaling of 1080p to 4k by running those models with TensorRT (NVIDIA only). Intented to use the 2x_AnimeJaNai V2 models but can be configured to run any Real-ESRGAN Compact ONNX models. 
 
 ## 2x_AnimeJaNai V2 Models
-2x_AnimeJaNai V2 is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended to upscale 1080p anime to 4k with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. The models can also work with SD anime by running the models twice, first from SD to HD, and then HD to UHD.
+Most HD anime is [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html), but some resolution between 720p and 1080p. When the anime video is prepared for broadcast, it is scaled to 1080p resolution which results in scaling artifacts and a blurry image. In training these models, the goal was to address these scaling and blur issues and produce a result that appears as if the anime was originally mastered in 4k resolution.  
+
+2x_AnimeJaNai V2 is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended to upscale 1080p anime to 4k with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. While the models are trained specifically for on 1080p anime and work best upscaling 1080p for 4k, the models can also produce acceptable results with lower resolution anime. SD anime may be upscaled to HD, or the model may be run twice to upscale SD to UHD.
 
 The V2 models offer several improvements over the V1 models, including fixed oversharpening artifacts, more accurate colors including line colors, better artifact handling, and better enhancement and preservation of background detail and grain. Overall the V2 models produce a much more natural and faithful result compared to the V1 models. 
+
 
 ## Support for Other Media Players
 Any media player which supports external DirectShow filters should be able to run these models, by using [avisynth_filter](https://github.com/CrendKing/avisynth_filter) to get VapourSynth running in the video player. 
@@ -27,5 +30,7 @@ For chaiNNer, the TensorRT backend is recommended for NVIDIA users for fastest r
 - Community feedback on V1 models
 - [MPV_lazy](https://github.com/hooke007/MPV_lazy) and [vs-mlrt](https://github.com/AmusementClub/vs-mlrt)
 - [traiNNer-redux](https://github.com/joeyballentine/traiNNer-redux)
+- [Dataset Destroyer](https://github.com/Kim2091/helpful-scripts/tree/main/Dataset%20Destroyer)
 - [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 - [OpenModelDB](https://openmodeldb.info/)
+- [getnative](https://github.com/Infiziert90/getnative)
