@@ -10,8 +10,7 @@ This project provides a set of Real-ESRGAN Compact ONNX upscaling models, and a 
 
 Most HD anime is [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html), but some resolution between 720p and 1080p. When the anime video is prepared for distribution, it is scaled to 1080p resolution which results in scaling artifacts and a blurry image. In training these models, the goal was to address these scaling and blur issues and produce a result that appears as if the anime was originally mastered in 4k resolution.
 
-The V2 models offer several improvements over the V1 models, including fixed oversharpening artifacts, more accurate colors including line colors, better artifact handling, and better enhancement and preservation of background detail and grain. Overall the V2 models produce a much more natural and faithful result compared to the V1 models. 
-
+The V2 models took over four months of preparation and training, and over 200 release candidate models were trained during that time. The V2 models offer several improvements over the V1 models, including fixed oversharpening artifacts, more accurate colors including line colors, better artifact handling, and better enhancement and preservation of background detail and grain. Overall the V2 models produce a much more natural and faithful result compared to the V1 models. 
 
 ## Support for Other Media Players
 Any media player which supports external DirectShow filters should be able to run these models, by using [avisynth_filter](https://github.com/CrendKing/avisynth_filter) to get VapourSynth running in the video player. 
