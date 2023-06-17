@@ -6,9 +6,9 @@
 This project provides a set of Real-ESRGAN Compact ONNX upscaling models, and a custom build of mpv video player (currently Windows only) which supports realtime upscaling of 1080p to 4k by running those models with TensorRT (NVIDIA only). Intented to use the 2x_AnimeJaNai V2 models but can be configured to run any Real-ESRGAN Compact ONNX models. 
 
 ## 2x_AnimeJaNai V2 Models
-Most HD anime is [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html), but some resolution between 720p and 1080p. When the anime video is prepared for broadcast, it is scaled to 1080p resolution which results in scaling artifacts and a blurry image. In training these models, the goal was to address these scaling and blur issues and produce a result that appears as if the anime was originally mastered in 4k resolution.  
-
 2x_AnimeJaNai V2 is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended to upscale 1080p anime to 4k with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. While the models are trained specifically on 1080p anime and work best upscaling 1080p to 4k, the models can also produce acceptable results with lower resolution anime. SD anime may be upscaled to HD, or the model may be run twice to upscale SD to UHD.
+
+Most HD anime is [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html), but some resolution between 720p and 1080p. When the anime video is prepared for broadcast, it is scaled to 1080p resolution which results in scaling artifacts and a blurry image. In training these models, the goal was to address these scaling and blur issues and produce a result that appears as if the anime was originally mastered in 4k resolution.
 
 The V2 models offer several improvements over the V1 models, including fixed oversharpening artifacts, more accurate colors including line colors, better artifact handling, and better enhancement and preservation of background detail and grain. Overall the V2 models produce a much more natural and faithful result compared to the V1 models. 
 
