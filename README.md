@@ -8,9 +8,15 @@ This project provides a collection of Real-ESRGAN Compact ONNX upscaling models,
 ## 2x_AnimeJaNai V2 Models
 The 2x_AnimeJaNai V2 models are a collection of real-time 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models designed specifically for upscaling 1080p anime to 4K resolution. These models prioritize correcting the inherent blurriness often found in anime while preserving essential details and colors. Although trained on 1080p anime and optimized for upscaling from 1080p to 4K, the models can still produce worthwhile results when upscaling some lower-resolution anime. SD anime can be upscaled to HD, or the model can be run twice to upscale SD content to UHD.
 
-Most HD anime are [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html) but rather have a production resolution between 720p to 1080p. When the anime is distributed, the video is scaled up to 1080p, leading to scaling artifacts and a loss of image clarity in the source video. The aim of these models is to address these scaling and blur-related issues while upscaling to deliver a result that appears as if the anime was originally mastered in 4K resolution.
+Most HD anime are [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html) but rather have a production resolution between 720p to 1080p. When the anime is distributed to consumers via TV broadcast, web streaming, or home video, the video is scaled up to 1080p, leading to scaling artifacts and a loss of image clarity in the source video. The aim of these models is to address these scaling and blur-related issues while upscaling to deliver a result that appears as if the anime was originally mastered in 4K resolution.
 
-The development of the V2 models spanned over four months, during which over 200 release candidate models were trained and meticulously refined. The V2 models introduce several notable improvements compared to their V1 counterparts, including corrected oversharpening artifacts, more accurate colors including line colors, improved artifact handling, and better preservation and enhancement of background details and grain. Overall, the V2 models yield significantly more natural and faithful results compared to the V1 models.
+The development of the V2 models spanned over four months, during which over 200 release candidate models were trained and meticulously refined. The V2 models introduce several notable improvements compared to their V1 counterparts, including:
+- More accurate "native-res" aware sharpening, so the model works just as well on blurry native [720p sources](https://slow.pics/c/OcBGz8Rk), sharper native [1080p sources](https://slow.pics/c/s30TA9NY), and [everything in between](https://slow.pics/c/CQCoTL5e), without oversharpening artifacts
+- [More accurate colors including line colors](https://slow.pics/c/39lO9lni)
+- [Improved artifact handling](https://slow.pics/c/keJIWDf4)
+- Better preservation and enhancement of [background details](https://slow.pics/c/Mt2zAIR5) and [grain](https://slow.pics/c/9yGf4p97).
+
+Overall, the V2 models yield significantly more natural and faithful results compared to the V1 models.
 
 
 ## Support for Other Media Players
@@ -33,4 +39,4 @@ For chaiNNer, the TensorRT backend is recommended for NVIDIA users for fastest r
 - [Dataset Destroyer](https://github.com/Kim2091/helpful-scripts/tree/main/Dataset%20Destroyer)
 - [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 - [OpenModelDB](https://openmodeldb.info/)
-- [getnative](https://github.com/Infiziert90/getnative)
+- [getnative](https://github.com/Infiziert90/getnative) and [anibin](https://anibin.blogspot.com/)
