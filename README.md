@@ -9,7 +9,7 @@ This project provides a collection of Real-ESRGAN Compact ONNX upscaling models,
 Join the [**AnimeJaNai Discord server**](https://discord.gg/3ndRcUYA) for support and questions.
 
 ## Usage Instructions
-Download and extract the [latest release archive](https://github.com/the-database/mpv-upscale-2x_animejanai/releases) of mpv-upscale-2x_animejanai. 
+Download and extract the [latest release archive](https://github.com/the-database/mpv-upscale-2x_animejanai/releases) of mpv-upscale-2x_animejanai. Open the video player at `mpvnet.exe` to use [mpv.net](https://github.com/mpvnet-player/mpv.net) or `mpv.exe` to use plain [mpv](https://github.com/mpv-player/mpv) depending on your preference. 
 
 When playing a video for the first time, a TensorRT engine file will be created for the selected ONNX model. Playback will be paused and a command prompt box will open. Please make sure to wait while the engine is created. Engine creation only needs to happen once per model. Playback will resume on its own when finished.
 
