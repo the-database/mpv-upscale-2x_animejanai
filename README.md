@@ -8,6 +8,8 @@ This project provides a collection of Real-ESRGAN Compact ONNX upscaling models,
 ## Usage Instructions
 Download and extract the [latest release archive](https://github.com/the-database/mpv-upscale-2x_animejanai/releases) of mpv-upscale-2x_animejanai. 
 
+When playing a video for the first time, a TensorRT engine file will be created for the selected ONNX model. Playback will be paused and a command prompt box will open. Please make sure to wait while that completes and the video will start on its own when finished. This is only required the first time each model run on a video. 
+
 The player is preconfigured to upscale with 2x_AnimeJaNai_V2, and makes 6 upscaling profiles available by default. The available models and their respective profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
 
 |Model | Description | Profile | Keybinding | Minimum recommended GPU for upscaling 1080p to 4k |
