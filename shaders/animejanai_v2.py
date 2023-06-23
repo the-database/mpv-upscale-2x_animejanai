@@ -11,7 +11,7 @@ import rife_cuda
 import animejanai_v2_config
 
 # trtexec num_streams
-TOTAL_NUM_STREAMS = 4
+TOTAL_NUM_STREAMS = 2
 
 core = vs.core
 core.num_threads = 4  # can influence ram usage
@@ -70,7 +70,7 @@ def scale_to_1080(clip, w=1920, h=1080):
     else:
         prescalewidth = h * clip.width / clip.height
         prescaleheight = h
-    return vs.core.resize.Bicubic(clip, width=prescalewidth, height=prescaleheight)
+    return vs.core.resize.Spline36(clip, width=prescalewidth, height=prescaleheight)
 
 
 def upscale2x(clip, engine_name, num_streams):
@@ -95,7 +95,11 @@ def upscale2x(clip, engine_name, num_streams):
 def run_animejanai(clip, container_fps, chain_conf):
     models = chain_conf.get('models', [])
     colorspace = "709"
-    colorlv = clip.get_frame(0).props._ColorRange
+    colorlv = 1
+    try:
+        colorlv = clip.get_frame(0).props._ColorRange
+    except AttributeError:
+        pass
     fmt_in = clip.format.id
 
     if len(models) > 0:
@@ -109,27 +113,27 @@ def run_animejanai(clip, container_fps, chain_conf):
                 resize_factor_before_upscale = 1
 
             try:
-                clip = vs.core.resize.Bicubic(clip, format=vs.RGBH, matrix_in_s=colorspace,
+                clip = vs.core.resize.Spline36(clip, format=vs.RGBH, matrix_in_s=colorspace,
                                               width=clip.width / resize_factor_before_upscale,
                                               height=clip.height / resize_factor_before_upscale)
 
                 clip = run_animejanai_upscale(clip, model_conf)
             except:
-                clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s=colorspace,
+                clip = vs.core.resize.Spline36(clip, format=vs.RGBS, matrix_in_s=colorspace,
                                               width=clip.width / resize_factor_before_upscale,
                                               height=clip.height / resize_factor_before_upscale)
 
                 clip = run_animejanai_upscale(clip, model_conf)
-
-    if chain_conf['rife']:
-        clip = rife_cuda.rife(clip, clip.width, clip.height, container_fps)
 
     fmt_out = fmt_in
     if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10,
                       vs.YUV444P10]:
         fmt_out = vs.YUV420P10
 
-    clip = vs.core.resize.Bicubic(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv == 0 else None)
+    clip = vs.core.resize.Spline36(clip, format=fmt_out, matrix_s=colorspace, range=1 if colorlv == 0 else None)
+
+    if chain_conf['rife']:
+        clip = rife_cuda.rife(clip, clip.width, clip.height, container_fps)
 
     clip.set_output()
 
@@ -149,10 +153,12 @@ def run_animejanai_upscale(clip, model_conf):
 def run_animejanai_with_keybinding(clip, container_fps, keybinding):
     section_key = f'slot_{keybinding}'
 
-    for chain_conf in config[section_key].values():
+    for chain_key, chain_conf in config[section_key].items():
         # Run the first chain which the video fits the criteria for, if any
         if chain_conf['min_px'] <= clip.width * clip.height <= chain_conf['max_px'] and \
                 chain_conf['min_fps'] <= container_fps <= chain_conf['max_fps']:
+            logger.debug(f'run_animejanai slot {keybinding} {chain_key}')
+
             run_animejanai(clip, container_fps, chain_conf)
             return
 

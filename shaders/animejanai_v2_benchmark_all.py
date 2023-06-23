@@ -12,9 +12,9 @@ import animejanai_v2_config
 table = {}
 
 
-def get_chain_conf(conf, height):
+def get_chain_conf(conf, px):
     for chain_conf in conf.values():
-        if chain_conf['min_height'] <= height <= chain_conf['max_height']:
+        if chain_conf['min_px'] <= px <= chain_conf['max_px']:
             return chain_conf
     return None
 
@@ -62,8 +62,9 @@ for filename in os.listdir('./benchmarks'):
 
             basename = pathlib.Path(filename).stem
             resolution = basename.split('x')
+            width = int(resolution[0])
             height = int(resolution[1])
-            chain_conf = get_chain_conf(conf, height)
+            chain_conf = get_chain_conf(conf, width*height)
             key = f"({get_engine(chain_conf)})"
 
             scale = f'{len(chain_conf["models"])*2}x'

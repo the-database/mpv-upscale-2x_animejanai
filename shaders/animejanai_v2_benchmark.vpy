@@ -6,14 +6,11 @@ sys.path.append(str(pathlib.Path().absolute()))
 import animejanai_v2
 
 # Instructions for running this benchmarking tool
-# 1. First time setup, open a command window in your main mpv directory and run:
-#     .\python.exe .\vsrepo.py -p update
-#     .\python.exe .\vsrepo.py install ffms2 -p
-# 2. Edit the path of the source video below, from ./video.mkv to the path of 
+# 1. Edit the path of the source video below, from ./video.mkv to the path of
 #    the video you want to benchmark upscaling on
-# 3. Set the slot below, to a value between 1-9 to select the slot, configured in animejanai_v2.conf,
+# 2. Set the slot below, to a value between 1-9 to select the slot, configured in animejanai_v2.conf,
 #    that you want to benchmark
-# 4. Run the following command from the main mpv directory:
+# 3. Run the following command from the main mpv directory:
 #     .\VSPipe.exe --start 0 --end 2000 ./portable_config/shaders/animejanai_v2_benchmark.vpy -p .
 
 required_args = {'slot', 'video_path'}

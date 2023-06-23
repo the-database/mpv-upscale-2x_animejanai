@@ -1,28 +1,7 @@
 import configparser
 import os
 import re
-
-# sampleconfig = {
-#     'slot_1': [
-#         {
-#             'min_height': 0,
-#             'max_height': 720,
-#             'min_fps': 0,
-#             'max_fps': 24,
-#             'models': [{
-#                 'resize_factor_before_upscale': 0,
-#                 'resize_height_before_upscale': 0,
-#                 'name': 'whatever'
-#             }],
-#             'rife': False
-#         },
-#         {
-#             'min_height': 720,
-#             'max_height': 1080,
-#             'models': []
-#         }
-#     ]
-# }
+import math
 
 
 bools = {'logging'}
@@ -75,7 +54,40 @@ def read_config_by_chain_model(flat_conf, section, chain, model):
 def read_config():
     parser = configparser.ConfigParser()
     flat_conf = {}
-    conf = {}
+    conf = {'slot_1001': {'chain_1': {'min_px': 921600.0, 'max_px': 2073600.0, 'min_fps': 0.0, 'max_fps': 30.0,
+                                      'models': [
+                                          {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+                                           'name': '2x_AnimeJaNai_V2_Compact_36k'}], 'rife': False},
+                          'chain_2': {'min_px': 0.0, 'max_px': 921600.0, 'min_fps': 0.0, 'max_fps': 30.0, 'models': [
+                              {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+                               'name': '2x_AnimeJaNai_V2_Compact_36k'},
+                              {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+                               'name': '2x_AnimeJaNai_V2_Compact_36k'}], 'rife': False}}, 'slot_1002': {
+        'chain_1': {'min_px': 921600.0, 'max_px': 2073600.0, 'min_fps': 0.0, 'max_fps': 30.0, 'models': [
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_UltraCompact_30k'}], 'rife': False},
+        'chain_2': {'min_px': 0.0, 'max_px': 921600.0, 'min_fps': 0.0, 'max_fps': 30.0, 'models': [
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_UltraCompact_30k'},
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_UltraCompact_30k'}], 'rife': False}}, 'slot_1003': {
+        'chain_1': {'min_px': 921600.0, 'max_px': 2073600.0, 'min_fps': 0.0, 'max_fps': 30.0, 'models': [
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_SuperUltraCompact_100k'}], 'rife': False},
+        'chain_2': {'min_px': 0.0, 'max_px': 921600.0, 'min_fps': 0.0, 'max_fps': 30.0, 'models': [
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_SuperUltraCompact_100k'},
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_SuperUltraCompact_100k'}], 'rife': False}}, 'slot_1004': {
+        'chain_1': {'min_px': 0.0, 'max_px': 2073600.0, 'min_fps': 0.0, 'max_fps': math.inf, 'models': [
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_Compact_36k'}], 'rife': False}}, 'slot_1005': {
+        'chain_1': {'min_px': 0.0, 'max_px': 2073600.0, 'min_fps': 0.0, 'max_fps': math.inf, 'models': [
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_UltraCompact_30k'}], 'rife': False}}, 'slot_1006': {
+        'chain_1': {'min_px': 0.0, 'max_px': 2073600.0, 'min_fps': 0.0, 'max_fps': math.inf, 'models': [
+            {'resize_factor_before_upscale': 1.0, 'resize_height_before_upscale': 0.0,
+             'name': '2x_AnimeJaNai_V2_SuperUltraCompact_100k'}], 'rife': False}}}
     parser.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "animejanai_v2.conf"))
 
     all_keys_by_section = {}
@@ -97,7 +109,7 @@ def read_config():
         all_keys = all_keys_by_section[section]
 
         all_chain_keys = {re.match(r'chain_(\d+)_.*', key).group(0) for key in all_keys if
-                      re.match(r'chain_(\d+)_.*', key) is not None}
+                          re.match(r'chain_(\d+)_.*', key) is not None}
 
         all_chains = {int(re.match(r'chain_(\d+)_.*', key).group(1)) for key in all_keys if
                       re.match(r'chain_(\d+)_.*', key) is not None}
@@ -108,7 +120,7 @@ def read_config():
             all_models = {int(re.match(rf'chain_{chain}_model_(\d+).*', key).group(1)) for key in all_keys if
                           re.match(rf'chain_{chain}_model_(\d+).*', key) is not None}
 
-            conf[section][f'chain_{i + 1}'] = read_config_by_chain(flat_conf, section, i + 1, len(all_models))
+            conf[section][f'chain_{int(chain)}'] = read_config_by_chain(flat_conf, section, int(chain), len(all_models))
 
         for key in all_other:
             conf[section][key] = parse_value(key, parser[section][key])
