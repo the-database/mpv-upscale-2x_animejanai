@@ -16,7 +16,7 @@ The player is preconfigured to upscale with 2x_AnimeJaNai_V2, and makes 6 upscal
 |||`upscale-on-compact2x`|`Shift+4`||
 |UltraCompact | High quality model which trades slight quality for major performance gains | `upscale-on-ultracompact4x` | `Shift+2` | RTX 3080|
 |||`upscale-on-ultracompact2x`|`Shift+5`||
-|SuperUltraCompact | Fastest performance model which sacrifice a bit more quality | `upscale-on-superultracompact4x` | `Shift+3` | RTX 3060?|
+|SuperUltraCompact | Fastest performance model which sacrifices a bit more quality | `upscale-on-superultracompact4x` | `Shift+3` | RTX 3060?|
 |||`upscale-on-superultracompact2x`|`Shift+6`||
 
 The 2x and 4x profiles behave the same on HD videos, but the 4x profiles will run the models twice on SD videos and produce a sharper result. 
