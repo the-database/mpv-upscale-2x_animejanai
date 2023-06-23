@@ -6,6 +6,8 @@
 ## Overview
 This project provides a collection of Real-ESRGAN Compact ONNX upscaling models, along with a custom build of mpv video player. The video player (currently Windows only), enables real-time upscaling of 1080p content to 4K by running these models using TensorRT (NVIDIA only). While the default configuration upscales using the 2x_AnimeJaNai V2 models, it can be easily customized to utilize any Real-ESRGAN Compact ONNX models.
 
+Join the [**AnimeJaNai Discord server**](https://discord.gg/3ndRcUYA) for support and questions.
+
 ## Usage Instructions
 Download and extract the [latest release archive](https://github.com/the-database/mpv-upscale-2x_animejanai/releases) of mpv-upscale-2x_animejanai. 
 
