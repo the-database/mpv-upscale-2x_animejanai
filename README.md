@@ -1,73 +1,67 @@
-# Upscaling Anime in mpv with 2x_AnimeJaNai
+# Upscaling Anime in mpv with 2x_AnimeJaNai V2
+
+![2x animejanai v2 logo demo7](https://github.com/the-database/mpv-upscale-2x_animejanai/assets/25811902/7f293066-ece0-4c4b-b12c-a49cb95680b7)
 
 ## Overview
-NOTE: V2 models are currently under development. For more information please see [#5](/../../issues/5). 
+This project provides a collection of Real-ESRGAN Compact ONNX upscaling models, along with a custom build of mpv video player. The video player (currently Windows only), enables real-time upscaling of 1080p content to 4K by running these models using TensorRT (NVIDIA only). While the default configuration upscales using the 2x_AnimeJaNai V2 models, it can be easily customized to utilize any Real-ESRGAN Compact ONNX models.
 
-This project provides a PowerShell script (Windows only) to set up mpv to run ONNX upscaling models in realtime with TensorRT (NVIDIA only). Linux and Mac may work with manual setup described below. Originally intented to use the 2x_AnimeJaNai models but any provided ONNX model can be selected during setup. 
+## Usage Instructions
+Download and extract the [latest release archive](https://github.com/the-database/mpv-upscale-2x_animejanai/releases) of mpv-upscale-2x_animejanai. 
 
-## 2x_AnimeJaNai Model
-Video Samples (Select 4K quality on YouTube)
+The player is preconfigured to upscale with 2x_AnimeJaNai_V2, and makes 6 upscaling profiles available by default. The available models and their respective profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
 
-[![Demo 3](demothumb1.png)](https://www.youtube.com/watch?v=gkE-uPPGzmA&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=1)
-[![Demo 2](demothumb2.png)](https://www.youtube.com/watch?v=CzGaLGjYSpQ&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=2)
-[![Demo 1](demothumb3.png)](https://www.youtube.com/watch?v=m1WMDn4FK8I&list=PLcrA746sMVSi6t0PYXEDOkhocuDd31zC7&index=3)
+|Model | Description | Profile | Keybinding | Minimum recommended GPU|
+|-|-|-|-|-|
+|Compact | Highest quality model | `upscale-on-compact4x`| `Shift+1` | RTX 4090|
+|||`upscale-on-compact2x`|`Shift+4`||
+|UltraCompact | High quality model which trades slight quality for major performance gains | `upscale-on-ultracompact4x` | `Shift+2` | RTX 3080|
+|||`upscale-on-ultracompact2x`|`Shift+5`||
+|SuperUltraCompact | Fastest performance model which sacrifice a bit more quality | `upscale-on-superultracompact4x` | `Shift+3` | RTX 3060?|
+|||`upscale-on-superultracompact2x`|`Shift+6`||
 
-Additional Screenshots: https://imgsli.com/MTUxMDYx
+The 2x and 4x profiles behave the same on HD videos, but the 4x models will run the models twice on SD videos and produce a sharper result. 
 
-Comparisons of all 2x_AnimeJaNai variants to Anime4K + other upscalers and compact models: https://imgsli.com/MTUxMjY4
+The default settings utilize the UltraCompact model with the `upscale-on-ultracompact4x` profile. The default upscaler is specified in `mpv-upscale-2x_animejanai/portable_config/mpv.conf`. 
+To change the default profile, edit the `mpv.conf` file and change `profile=upscale-on-ultracompact4x` to use the desired profile based on your hardware requirements and preferences. 
 
-2x_AnimeJaNai is a set of realtime 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models intended for high or medium quality 1080p anime to 4k with an emphasis on correcting the inherit blurriness of anime while preserving details and colors. These models are not suitable for artifact-heavy or highly compressed content as they will just sharpen artifacts. The models can also work with SD anime by running the models twice, first from SD to HD, and then HD to UHD. The installer in this repository can set these models up to run with mpv on Windows.
+The upscaling can be further customized using the configuration file for AnimeJaNai which is located at `mpv-upscale-2x_animejanai/portable_config/shaders/animejanai_v2.conf`. The configuration file allows setup of up to 9 custom slots and allows the use of custom Compact models, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. All available settings are described in more detail in the config file. More information on custom configurations will be available on the wiki soon. The custom slots can be activated with keybindings `Ctrl+1` through `Ctrl+9`. To use one of these custom slots as the default upscaler, set the appropriate profile corresponding to the desired slot in mpv.conf, such as `profile=upscale-on-1`.
 
-|  |   |   |   |
-|---|---|---|---|
-|  | **Compact**<br>Highest quality models which are also the sharpest and have the most detail enhancement. Requires minimum of RTX 4090 for realitime playback, so it is most suitable for pre-rendering upscales.  | **UltraCompact**<br>High quality models which trade slight quality for major performance gains. The UltraCompact models have the best balance of quality and performance. Requires minimum of RTX 3080 for realtime playback.   | **SuperUltraCompact**<br>Fastest performance models which sacrifice a bit more quality and sharpness, primarily in background detail. Use if running any card slower than the RTX 3080 for realtime playback. Minimum card required for realtime playback has yet to be determined.  |
-| **Strong**<br>Sharpest models which may oversharpen some images, but can offer a pleasant amount of sharpness when viewing from a distance on a display such as a TV or projector.  | 2x_AnimeJaNai_ Strong_V1_ Compact_net_g_120000  | 2x_AnimeJaNai_ Strong_V1_ UltraCompact_net_g_100000  |  2x_AnimeJaNai_ Strong_V1_ SuperUltraCompact_net_g_100000 |
-| **Standard**<br>Offers a middle ground in sharpness between the soft and strong models. Still includes a moderate amount of sharpening and detail enhancement, but may be too strong depending on the source video and viewing distance.   | 2x_AnimeJaNai_ Standard_V1_ Compact_net_g_120000  | 2x_AnimeJaNai_ Standard_V1_ UltraCompact_net_g_100000  | ~~(To be released)~~ To be superceded by [V2](/../../issues/5)  |
-| **Soft**<br>Softest models which should prevent oversharpening as much as possible, but has significantly reduced sharpening in backgrounds and detail enhancement. Most suited for viewing up close on a monitor.  | ~~(To be released)~~ To be superseded by [V2](/../../issues/5)  | ~~(To be released)~~ To be superseded by [V2](/../../issues/5)  | ~~(To be released)~~ To be superseded by [V2](/../../issues/5)  |
+All keybindings can be customized by editing the keybindings at the bottom of the `mpv-upscale-2x_animejanai/portable_config/input.conf` file. By default, AnimeJaNai upscaling can be turned off using the `Ctrl+0` keybinding. 
 
-## Installer Instructions
-1. Download and extract the [latest release](https://github.com/the-database/mpv-upscale-2x_animejanai/releases/download/1.0.0/mpv-upscale-2x_animejanai_v1.zip). 
-2. Optionally add any custom ONNX models to the extracted directory, which should contain `install.ps1`.
-3. Run Powershell with Admin rights, navigate to the extracted directory containing `install.ps1`, execute installer with commands: 
-   ```
-   Set-ExecutionPolicy unrestricted
-   .\install.ps1
-   ```
-4. Run mpv.net from `C:\mpv.net` and play any video. Upscaling is automatically applied. Toggle using `v` keyboard shortcut. 
+## 2x_AnimeJaNai V2 Models
+The 2x_AnimeJaNai V2 models are a collection of real-time 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models designed specifically for upscaling 1080p anime to 4K resolution. These models prioritize correcting the inherent blurriness often found in anime while preserving essential details and colors. Although trained on 1080p anime and optimized for upscaling from 1080p to 4K, the models can still produce worthwhile results when upscaling some lower-resolution anime. SD anime can be upscaled to HD, or the model can be run twice to upscale SD content to UHD.
 
-## Simplified Setup Instructions using MPV_lazy
-[MPV_lazy](https://github.com/hooke007/MPV_lazy) prepackages most of the required components (Python, VapourSynth, vs-mlrt) so it simplifies the initial setup. 
-1. Download the latest MPV_lazy exe and vsMega.7z file from the [releases page](https://github.com/hooke007/MPV_lazy/releases).
-3. Run the MPV_lazy exe to self extract into a newly created mpv-lazy directory. Move the mpv-lazy directory to a permanent location. Extract vsMega into the same mpv-lazy directory. 
-4. Optionally, delete everything inside the portable_config directory in the mpv-lazy directory if you want to remove the mpv-lazy config customizations.
-5. Optionally, download latest beta mpv.net from https://github.com/mpvnet-player/mpv.net/releases and extract its contents to the mpv-lazy directory if you would like to use mpv.net over mpv. 
-6. Download ONNX models and move to `mpv-lazy/vapoursynth64/plugins/vsmlrt-cuda`.
-7. Inside the `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda` run this command, replacing {MODEL_NAME} with the name of the ONNX model: ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
-8. Download contents of this repository and extract to `mpv-lazy`.
-9. Open `%APPDATA%\mpv.net\shaders\2x_SharpLines.vpy`. 
-   1. Set the HD_ENGINE_NAME and SD_ENGINE_NAME to the name of the engines you created in step 4. 
-   2. Ensure that the `engine_path` on line 26 points to the correct location. It should point to the directory where your engines were created. 
+Most HD anime are [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html) but rather have a production resolution between 720p to 1080p. When the anime is distributed to consumers via TV broadcast, web streaming, or home video, the video is scaled up to 1080p, leading to scaling artifacts and a loss of image clarity in the source video. The aim of these models is to address these scaling and blur-related issues while upscaling to deliver a result that appears as if the anime was originally mastered in 4K resolution.
 
-## Full Manual Setup Instructions
-If the installer cannot be used, and MPV_lazy is setup can be done manually as follows. Set up on Linux or Mac should be possible with the following steps, replacing any components with their Linux or Mac equivalents, but this is untested. 
-1. Install latest Python 3.10.x from https://www.python.org/downloads/windows/
-1. Install latest Vapoursynth64 from https://github.com/vapoursynth/vapoursynth/releases
-2. Install latest pre-release vs-mlrt from https://github.com/AmusementClub/vs-mlrt/releases
-   1. Download vsmlrt-windows-x64-cuda.v12.7z and extract contents to `%APPDATA%\VapourSynth\plugins64`
-3. Download ONNX models and move to `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda`
-4. Inside the `%APPDATA%\VapourSynth\plugins64\vsmlrt-cuda` run this command for each model that you want to use, replacing {MODEL_NAME} with the name of the ONNX model(s): ```.\trtexec --fp16 --onnx={MODEL_NAME}.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x1080x1920 --maxShapes=input:1x3x1080x1920 --saveEngine={MODEL_NAME}.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT```
-5. Download latest beta mpv.net from https://github.com/mpvnet-player/mpv.net/releases
-   1. Extract to a permanent location such as `C:\`
-   2. Run `mpvnet.exe` once and then close it
-7. Download contents of this repository and extract to `%APPDATA%\mpv.net`
-8. Open `%APPDATA%\mpv.net\shaders\2x_SharpLines.vpy`. 
-   1. Set the HD_ENGINE_NAME and SD_ENGINE_NAME to the name of the engines you created in step 4. 
-   2. Ensure that the `engine_path` on line 26 points to the correct location. It should point to the directory where your engines were created. 
+The development of the V2 models spanned over four months, during which over 200 release candidate models were trained and meticulously refined. The V2 models introduce several notable improvements compared to their V1 counterparts, including:
+- More accurate "native-res aware" sharpening, so the model works just as well on blurry native [720p sources](https://slow.pics/c/OcBGz8Rk), sharper native [1080p sources](https://slow.pics/c/s30TA9NY), and [everything in between](https://slow.pics/c/CQCoTL5e), without oversharpening artifacts
+- [More accurate colors including line colors](https://slow.pics/c/39lO9lni)
+- [Improved artifact handling](https://slow.pics/c/keJIWDf4)
+- Better preservation and enhancement of [background details](https://slow.pics/c/Mt2zAIR5) and [grain](https://slow.pics/c/9yGf4p97).
+
+Overall, the V2 models yield significantly more natural and faithful results compared to the V1 models.
+
+## Benchmarks
+[Benchmarks](https://github.com/the-database/mpv-upscale-2x_animejanai/wiki/Benchmarks) for various hardware configurations tested against various upscaling configurations are available on the wiki. 
 
 ## Support for Other Media Players
 Any media player which supports external DirectShow filters should be able to run these models, by using [avisynth_filter](https://github.com/CrendKing/avisynth_filter) to get VapourSynth running in the video player. 
 
 ## Prerendering Videos using Other Graphics Cards
-The 2x_AnimeJaNai_V1 ONNX models can be used on a PC with any graphics card to render upscaled videos, even when using graphics cards not fast enough for realtime playback. Any program that supports ONNX models can be used, such as [chaiNNer](https://github.com/chaiNNer-org/chaiNNer) or [VSGAN-tensorrt-docker](https://github.com/styler00dollar/VSGAN-tensorrt-docker).
+The 2x_AnimeJaNai_V2 ONNX models can be used on a PC with any graphics card to render upscaled videos, even when using graphics cards not fast enough for realtime playback. Please see the file `shaders/animejanai_v2_encode.vpy` included in the release package for more details on how to set this up. Alternatively, any program that supports ONNX models can be used, such as [chaiNNer](https://github.com/chaiNNer-org/chaiNNer) or [VSGAN-tensorrt-docker](https://github.com/styler00dollar/VSGAN-tensorrt-docker).
 
-For NVIDIA users, the TensorRT backend is recommended for fastest rendering performance. AMD users should use the NCNN backend instead. Templates for chaiNNer are available for [NVIDIA](animejanai-nvidia.chn?raw=1) and [AMD](animejanai-amd.chn?raw=1) users. Simply download and open the appropriate `chn` file in chaiNNer, and select the ONNX model file and the input video file to upscale. 
+For chaiNNer, the TensorRT backend is recommended for NVIDIA users for fastest rendering performance. AMD users should use the NCNN backend instead. Templates for chaiNNer are available for [NVIDIA](animejanai-nvidia.chn?raw=1) and [AMD](animejanai-amd.chn?raw=1) users. Simply download and open the appropriate `chn` file in chaiNNer, and select the ONNX model file and the input video file to upscale. 
+
+## Acknowledgements
+- [Upscale Wiki](https://upscale.wiki/wiki/Main_Page) and associated Discord server
+  - 4x-AnimeSharp by Kim2091
+  - 1x_HurrDeblur_SuperUltraCompact by Zarxrax
+  - SaiyaJin DeJpeg by Twittman
+- [422415](https://github.com/422415) for significant assistance in dataset preparation and continuous feedback during development of V2 models
+- Community feedback on V1 models
+- [MPV_lazy](https://github.com/hooke007/MPV_lazy) and [vs-mlrt](https://github.com/AmusementClub/vs-mlrt)
+- [traiNNer-redux](https://github.com/joeyballentine/traiNNer-redux)
+- [Dataset Destroyer](https://github.com/Kim2091/helpful-scripts/tree/main/Dataset%20Destroyer)
+- [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+- [OpenModelDB](https://openmodeldb.info/)
+- [getnative](https://github.com/Infiziert90/getnative) and [anibin](https://anibin.blogspot.com/)
