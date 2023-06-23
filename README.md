@@ -24,7 +24,7 @@ The 2x and 4x profiles behave the same on HD videos, but the 4x models will run 
 The default settings utilize the UltraCompact model with the `upscale-on-ultracompact4x` profile. The default upscaler is specified in `mpv-upscale-2x_animejanai/portable_config/mpv.conf`. 
 To change the default profile, edit the `mpv.conf` file and change `profile=upscale-on-ultracompact4x` to use the desired profile based on your hardware requirements and preferences. 
 
-The upscaling can be further customized using the configuration file for AnimeJaNai which is located at `mpv-upscale-2x_animejanai/portable_config/shaders/animejanai_v2.conf`. The configuration file allows setup of up to 9 custom slots and allows the use of custom Compact models, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. All available settings are described in more detail in the config file. The custom slots can be activated with keybindings `Ctrl+1` through `Ctrl+9`. To use one of these custom slots as the default upscaler, set the appropriate profile corresponding to the desired slot in mpv.conf, such as `profile=upscale-on-1`.
+The upscaling can be further customized using the configuration file for AnimeJaNai which is located at `mpv-upscale-2x_animejanai/portable_config/shaders/animejanai_v2.conf`. The configuration file allows setup of up to 9 custom slots and allows the use of custom Compact models, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. All available settings are described in more detail in the config file. More information on custom configurations will be available on the wiki soon. The custom slots can be activated with keybindings `Ctrl+1` through `Ctrl+9`. To use one of these custom slots as the default upscaler, set the appropriate profile corresponding to the desired slot in mpv.conf, such as `profile=upscale-on-1`.
 
 All keybindings can be customized by editing the keybindings at the bottom of the `mpv-upscale-2x_animejanai/portable_config/input.conf` file. By default, AnimeJaNai upscaling can be turned off using the `Ctrl+0` keybinding. 
 
@@ -41,6 +41,8 @@ The development of the V2 models spanned over four months, during which over 200
 
 Overall, the V2 models yield significantly more natural and faithful results compared to the V1 models.
 
+## Benchmarks
+[Benchmarks](https://github.com/the-database/mpv-upscale-2x_animejanai/wiki/Benchmarks) for various hardware configurations tested against various upscaling configurations are available on the wiki. 
 
 ## Support for Other Media Players
 Any media player which supports external DirectShow filters should be able to run these models, by using [avisynth_filter](https://github.com/CrendKing/avisynth_filter) to get VapourSynth running in the video player. 
