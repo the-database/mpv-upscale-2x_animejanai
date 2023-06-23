@@ -19,7 +19,7 @@ The player is preconfigured to upscale with 2x_AnimeJaNai_V2, and makes 6 upscal
 |SuperUltraCompact | Fastest performance model which sacrifice a bit more quality | `upscale-on-superultracompact4x` | `Shift+3` | RTX 3060?|
 |||`upscale-on-superultracompact2x`|`Shift+6`||
 
-The 2x and 4x profiles behave the same on HD videos, but the 4x models will run the models twice on SD videos and produce a sharper result. 
+The 2x and 4x profiles behave the same on HD videos, but the 4x profiles will run the models twice on SD videos and produce a sharper result. 
 
 The default settings utilize the UltraCompact model with the `upscale-on-ultracompact4x` profile. The default upscaler is specified in `mpv-upscale-2x_animejanai/portable_config/mpv.conf`. 
 To change the default profile, edit the `mpv.conf` file and change `profile=upscale-on-ultracompact4x` to use the desired profile based on your hardware requirements and preferences. 
