@@ -12,19 +12,19 @@ The player is preconfigured to upscale with 2x_AnimeJaNai_V2, and makes 6 upscal
 
 |Model | Description | Profile | Keybinding | Minimum recommended GPU|
 |-|-|-|-|-|
-|Compact | Highest quality model | `upscale-on-compact4x`| Shift+1 | RTX 4090|
-|||`upscale-on-compact2x`|Shift+4||
-|UltraCompact | High quality model which trades slight quality for major performance gains | `upscale-on-ultracompact4x` | Shift+2 | RTX 3080|
-|||`upscale-on-ultracompact2x`|Shift+5||
-|SuperUltraCompact | Fastest performance model which sacrifice a bit more quality | `upscale-on-superultracompact4x` | Shift+3 | RTX 3060?|
-|||`upscale-on-superultracompact2x`|Shift+6||
+|Compact | Highest quality model | `upscale-on-compact4x`| `Shift+1` | RTX 4090|
+|||`upscale-on-compact2x`|`Shift+4`||
+|UltraCompact | High quality model which trades slight quality for major performance gains | `upscale-on-ultracompact4x` | `Shift+2` | RTX 3080|
+|||`upscale-on-ultracompact2x`|`Shift+5`||
+|SuperUltraCompact | Fastest performance model which sacrifice a bit more quality | `upscale-on-superultracompact4x` | `Shift+3` | RTX 3060?|
+|||`upscale-on-superultracompact2x`|`Shift+6`||
 
 The 2x and 4x profiles behave the same on HD videos, but the 4x models will run the models twice on SD videos and produce a sharper result. 
 
 The default settings utilize the UltraCompact model with the `upscale-on-ultracompact4x` profile. The default upscaler is specified in `mpv-upscale-2x_animejanai/portable_config/mpv.conf`. 
 To change the default profile, edit the `mpv.conf` file and change `profile=upscale-on-ultracompact4x` to use the desired profile based on your hardware requirements and preferences. 
 
-The upscaling can be further customized using the configuration file for AnimeJaNai which is located at `mpv-upscale-2x_animejanai/portable_config/shaders/animejanai_v2.conf`. The configuration file allows setup of up to 9 custom slots and allows the use of custom Compact models, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. All available settings are described in more detail in the config file. The custom slots can be activated with keybindings Ctrl+1 through Ctrl+9. To use one of these custom slots as the default upscaler, set the appropriate profile corresponding to the desired slot in mpv.conf, such as `profile=upscale-on-1`.
+The upscaling can be further customized using the configuration file for AnimeJaNai which is located at `mpv-upscale-2x_animejanai/portable_config/shaders/animejanai_v2.conf`. The configuration file allows setup of up to 9 custom slots and allows the use of custom Compact models, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. All available settings are described in more detail in the config file. The custom slots can be activated with keybindings `Ctrl+1` through `Ctrl+9`. To use one of these custom slots as the default upscaler, set the appropriate profile corresponding to the desired slot in mpv.conf, such as `profile=upscale-on-1`.
 
 All keybindings can be customized by editing the keybindings at the bottom of the `mpv-upscale-2x_animejanai/portable_config/input.conf` file. By default, AnimeJaNai upscaling can be turned off using the `Ctrl+0` keybinding. 
 
