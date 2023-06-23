@@ -10,7 +10,7 @@ Download and extract the [latest release archive](https://github.com/the-databas
 
 The player is preconfigured to upscale with 2x_AnimeJaNai_V2, and makes 6 upscaling profiles available by default. The available models and their respective profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
 
-|Model | Description | Profile | Keybinding | Minimum recommended GPU|
+|Model | Description | Profile | Keybinding | Minimum recommended GPU for upscaling 1080p to 4k |
 |-|-|-|-|-|
 |Compact | Highest quality model | `upscale-on-compact4x`| `Shift+1` | RTX 4090|
 |||`upscale-on-compact2x`|`Shift+4`||
