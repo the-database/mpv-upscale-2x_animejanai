@@ -11,7 +11,7 @@ import rife_cuda
 import animejanai_v2_config
 
 # trtexec num_streams
-TOTAL_NUM_STREAMS = 2
+TOTAL_NUM_STREAMS = 4
 
 core = vs.core
 core.num_threads = 4  # can influence ram usage
@@ -117,13 +117,13 @@ def run_animejanai(clip, container_fps, chain_conf):
                                               width=clip.width / resize_factor_before_upscale,
                                               height=clip.height / resize_factor_before_upscale)
 
-                clip = run_animejanai_upscale(clip, model_conf)
+                clip = run_animejanai_upscale(clip, model_conf, TOTAL_NUM_STREAMS // len(models))
             except:
                 clip = vs.core.resize.Spline36(clip, format=vs.RGBS, matrix_in_s=colorspace,
                                               width=clip.width / resize_factor_before_upscale,
                                               height=clip.height / resize_factor_before_upscale)
 
-                clip = run_animejanai_upscale(clip, model_conf)
+                clip = run_animejanai_upscale(clip, model_conf, TOTAL_NUM_STREAMS // len(models))
 
     fmt_out = fmt_in
     if fmt_in not in [vs.YUV410P8, vs.YUV411P8, vs.YUV420P8, vs.YUV422P8, vs.YUV444P8, vs.YUV420P10, vs.YUV422P10,
@@ -138,7 +138,7 @@ def run_animejanai(clip, container_fps, chain_conf):
     clip.set_output()
 
 
-def run_animejanai_upscale(clip, model_conf):
+def run_animejanai_upscale(clip, model_conf, num_streams):
     if model_conf['resize_height_before_upscale'] != 0:
         clip = scale_to_1080(clip, model_conf['resize_height_before_upscale'] * 16 / 9,
                              model_conf['resize_height_before_upscale'])
@@ -146,7 +146,7 @@ def run_animejanai_upscale(clip, model_conf):
         clip = scale_to_1080(clip)
 
     # upscale 2x
-    return upscale2x(clip, model_conf['name'], TOTAL_NUM_STREAMS)
+    return upscale2x(clip, model_conf['name'], num_streams)
 
 
 # keybinding: 1-9
