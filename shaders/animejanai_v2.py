@@ -139,7 +139,7 @@ def run_animejanai(clip, container_fps, chain_conf):
 
 
 def run_animejanai_upscale(clip, model_conf, num_streams):
-    if model_conf['resize_height_before_upscale'] != 0:
+    if model_conf['resize_height_before_upscale'] != 0 and model_conf['resize_height_before_upscale'] != clip.height:
         clip = scale_to_1080(clip, model_conf['resize_height_before_upscale'] * 16 / 9,
                              model_conf['resize_height_before_upscale'])
     elif clip.height > 1080:
