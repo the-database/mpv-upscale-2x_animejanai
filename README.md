@@ -6,7 +6,7 @@
 ## Overview
 This project provides a collection of Real-ESRGAN Compact ONNX upscaling models, along with a custom build of mpv video player. The video player (currently Windows only), enables real-time upscaling of 1080p content to 4K by running these models using TensorRT (NVIDIA only). While the default configuration upscales using the 2x_AnimeJaNai V2 models, it can be easily customized to utilize any Real-ESRGAN Compact ONNX models.
 
-Join the [**AnimeJaNai Discord server**](https://discord.gg/3ndRcUYA) for support and questions. 日本語も大丈夫です。
+Join the [**AnimeJaNai Discord server**](https://discord.gg/3ndRcUYA) to get the latest news, get support and questions, share your screenshots (use the `s` key in mpv), or share your feedback. 日本語も大丈夫です。
 
 ## Usage Instructions
 Ensure your NVIDIA graphics drivers are up to date. Download and extract the [latest release archive](https://github.com/the-database/mpv-upscale-2x_animejanai/releases) of mpv-upscale-2x_animejanai. Open the video player at `mpvnet.exe` to use [mpv.net](https://github.com/mpvnet-player/mpv.net) or `mpv.exe` to use plain [mpv](https://github.com/mpv-player/mpv) depending on your preference. 
@@ -31,6 +31,10 @@ The default upscaling profile is set up to use the UltraCompact model with the p
 The upscaling can be further customized using the configuration file for AnimeJaNai which is located at `mpv-upscale-2x_animejanai/portable_config/shaders/animejanai_v2.conf`. The configuration file allows the setup of up to 9 custom slots and also the use of custom chains, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. All available settings are described in more detail in the config file. More information on custom configurations will be available on the wiki soon. The custom slots can be activated with keybindings `Ctrl+1` through `Ctrl+9`. To use one of these custom slots as the default upscaler, set the appropriate profile name corresponding to the desired slot in mpv.conf, such as `profile=upscale-on-1`.
 
 All keybindings can be customized by editing lines near the bottom of the `mpv-upscale-2x_animejanai/portable_config/input.conf` file. By default, AnimeJaNai upscaling can be turned off using the `Ctrl+0` keybinding.
+
+All other mpv settings can be configured by editing `mpv-upscale-2x_animejanai/portable_config/mpv.conf` (see the [mpv manual](https://mpv.io/manual/stable/) for all options) for mpv options or `mpv-upscale-2x_animejanai/portable_config/input.conf` for mpv keybindings. 
+
+By default, screenshots can be taken with the `s` key and are stored in `mpv-upscale-2x_animejanai/portable_config/screenshots`. 
 
 ## 2x_AnimeJaNai V2 Models
 The 2x_AnimeJaNai V2 models are a collection of real-time 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models designed specifically for upscaling 1080p anime to 4K resolution. These models prioritize correcting the inherent blurriness often found in anime while preserving essential details and colors. Although trained on 1080p anime and optimized for upscaling from 1080p to 4K, the models can still produce worthwhile results when upscaling some lower-resolution anime. SD anime can be upscaled to HD, or the model can be run twice to upscale SD content to UHD.
