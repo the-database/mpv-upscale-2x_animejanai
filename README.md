@@ -2,7 +2,6 @@
 [![Discord](https://img.shields.io/discord/1121653618173546546?label=Discord&logo=Discord&logoColor=white)](https://discord.gg/EeFfZUBvxj)
 
 ![2x animejanai v3 logo demo 1660](https://github.com/the-database/mpv-upscale-2x_animejanai/assets/25811902/c95143bd-f547-4e99-9c3e-6f480e3007d5)
-![2x animejanai v3 logo demo](https://github.com/the-database/mpv-upscale-2x_animejanai/assets/25811902/f6042cf8-d634-42d0-a836-611c5f61ff97)
 
 ## Overview
 
