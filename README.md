@@ -41,18 +41,25 @@ All other mpv settings can be configured by editing `mpv-upscale-2x_animejanai/p
 
 By default, screenshots can be taken with the `s` key and are stored in `mpv-upscale-2x_animejanai/portable_config/screenshots`. 
 
-## 2x_AnimeJaNai V2 Models
-The 2x_AnimeJaNai V2 models are a collection of real-time 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models designed specifically for upscaling 1080p anime to 4K resolution. These models prioritize correcting the inherent blurriness often found in anime while preserving essential details and colors. Although trained on 1080p anime and optimized for upscaling from 1080p to 4K, the models can still produce worthwhile results when upscaling some lower-resolution anime. SD anime can be upscaled to HD, or the model can be run twice to upscale SD content to UHD.
+## 2x_AnimeJaNai Models
+The 2x_AnimeJaNai models are a collection of real-time 2x Real-ESRGAN Compact, UltraCompact, and SuperUltraCompact models designed specifically for doubling the resolution of HD and SD models. 
+
+### 2x_AnimeJaNai HD V3 Models
 
 Most HD anime are [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html) but rather have a production resolution between 720p and 1080p. When the anime is distributed to consumers via TV broadcast, web streaming, or home video, the video is scaled up to 1080p, leading to scaling artifacts and a loss of image clarity in the source video. The aim of these models is to address these scaling and blur-related issues while upscaling to deliver a result that appears as if the anime was originally mastered in 4K resolution.
 
-The development of the V2 models spanned over four months, during which over 200 release candidate models were trained and meticulously refined. The V2 models introduce several notable improvements compared to their V1 counterparts, including:
-- More accurate "native-res aware" sharpening, so the model works just as well on blurry native [720p sources](https://slow.pics/c/OcBGz8Rk), sharper native [1080p sources](https://slow.pics/c/s30TA9NY), and [everything in between](https://slow.pics/c/CQCoTL5e), without oversharpening artifacts
-- [More accurate colors including line colors](https://slow.pics/c/39lO9lni)
-- [Improved artifact handling](https://slow.pics/c/keJIWDf4)
-- Better preservation and enhancement of [background details](https://slow.pics/c/Mt2zAIR5) and [grain](https://slow.pics/c/9yGf4p97).
+The development of the V3 models spanned over five months, during which over 100 release candidate models were trained and meticulously refined. The V3 models introduce several notable improvements compared to their V2 counterparts, including:
+- More faithful appearance to original source
+- Improved handling of oversharpening artifacts 
+- Better at preserving intentional blur in scenes using depth of field
+- More accurate line colors, darkness, and thickness
+- Better preservation of soft shadow edges
 
-Overall, the V2 models yield significantly more natural and faithful results compared to the V1 models. 
+Overall, the V3 models yield significantly more natural and faithful results compared to the V2 models. 
+
+### 2x_AnimeJaNai SD V1 Models
+
+2x_AnimeJaNai SD V1 models are in developmnent. The latest release of mpv-upscale-2x_animejanai includes prerelease models for 2x_AnimeJaNai SD V1. While the 2xAnimeJaNai HD models can work well for some SD sources, those models were specifically trained to upscale HD anime and don't always work well for SD sources. The SD models are designed to upscale SD anime to appear as if the anime was mastered in HD resolution. With sufficient hardware, these models can be stacked with the HD models to upscale SD anime to 4k resolution. 
 
 ## Benchmarks
 [Benchmarks](https://github.com/the-database/mpv-upscale-2x_animejanai/wiki/Benchmarks) for various hardware configurations tested against various upscaling configurations are available on the wiki. 
@@ -71,9 +78,6 @@ The TensorRT backend is recommended for NVIDIA users for fastest rendering perfo
 
 ## Acknowledgements
 - [Upscale Wiki](https://upscale.wiki/wiki/Main_Page) and associated Discord server
-  - 4x-AnimeSharp by Kim2091
-  - 1x_HurrDeblur_SuperUltraCompact by Zarxrax
-  - SaiyaJin DeJpeg by Twittman
 - [422415](https://github.com/422415) for significant assistance in dataset preparation and continuous feedback during development of V2 models
 - Community feedback on V1 models
 - [MPV_lazy](https://github.com/hooke007/MPV_lazy) and [vs-mlrt](https://github.com/AmusementClub/vs-mlrt)
