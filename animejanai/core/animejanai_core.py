@@ -202,8 +202,12 @@ def run_animejanai_with_keybinding(clip, container_fps, keybinding):
     section_key = f'slot_{keybinding}'
 
     profile_name = config[section_key]['profile_name']
-    current_logger_info.append(f"Original Video Resolution: {clip.width}x{clip.height};    Original Video FPS: {float(container_fps):.3f}")
+
+    if int(keybinding) < 10:
+        profile_name = f"{keybinding}. {profile_name}"
+
     current_logger_info.append(f"Upscale Profile: {profile_name}")
+    current_logger_info.append(f"Original Video Resolution: {clip.width}x{clip.height};    Original Video FPS: {float(container_fps):.3f}")
 
     for chain_key, chain_conf in config[section_key].items():
         # Run the first chain which the video fits the criteria for, if any
@@ -219,10 +223,13 @@ def run_animejanai_with_keybinding(clip, container_fps, keybinding):
             logger.debug(f'run_animejanai slot {keybinding} {chain_key}')
 
             current_logger_info.append(f"Active Upscale Chain: {chain_key.replace('chain_', '')};    Resolution Range: {chain_conf['min_resolution']} - {chain_conf['max_resolution']};    FPS Range: {chain_conf['min_fps']} - {chain_conf['max_fps']}")
-
+            
             run_animejanai(clip, container_fps, chain_conf, config['global']['backend'])
             write_current_log()
             return
+
+    current_logger_info.append(f"No Chains Activated")
+    write_current_log()
     clip.set_output()
 
 
