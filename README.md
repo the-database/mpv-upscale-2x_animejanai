@@ -6,9 +6,7 @@
 
 ## Overview
 
-This project provides a collection of Real-ESRGAN Compact ONNX upscaling models, along with a custom build of mpv video player. The video player (currently Windows only), enables real-time upscaling of 1080p content to 4K by running these models using TensorRT (NVIDIA only). While the default configuration upscales using the 2x_AnimeJaNai V2 models, it can be easily customized to utilize any Real-ESRGAN Compact ONNX models.
-
-Samples: https://slow.pics/c/V3GkBJyR
+This project provides a collection of Real-ESRGAN Compact ONNX upscaling models, along with a custom build of mpv video player. The video player (currently Windows only), enables real-time upscaling of 1080p content to 4K by running these models using TensorRT (NVIDIA only). While the default configuration upscales using the 2x_AnimeJaNai models, it can be easily customized to utilize any Real-ESRGAN Compact ONNX models.
 
 Join the [**AnimeJaNai Discord server**](https://discord.gg/EeFfZUBvxj) to get the latest news, download pre-release and experimental models, get support and ask questions, share your screenshots (use the `s` key in mpv), or share your feedback. 日本語も大丈夫です。
 
@@ -17,26 +15,17 @@ Ensure your NVIDIA graphics drivers are up to date. Download and extract the [la
 
 When playing a video for the first time, a TensorRT engine file will be created for the selected ONNX model. Playback will be paused and a command prompt box will open. Please make sure to wait while the engine is created. Engine creation only needs to happen once per model. Playback will resume on its own when finished.
 
-The player is preconfigured to upscale with 2x_AnimeJaNai_V2, and makes 6 upscaling profiles available by default. The available models and their respective profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
+The player is preconfigured to upscale with 2x_AnimeJaNai models, and makes 3 upscaling profiles available by default. The available profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
 
-|Model | Description | Profile | Keybinding | Minimum recommended GPU for upscaling 1080p to 4k |
-|-|-|-|-|-|
-|Compact | Highest quality model | `upscale-on-compact4x`| `Shift+1` | RTX 4090|
-|||`upscale-on-compact2x`|`Shift+4`||
-|UltraCompact | High quality model which trades slight quality for major performance gains | `upscale-on-ultracompact4x` | `Shift+2` | RTX 3080|
-|||`upscale-on-ultracompact2x`|`Shift+5`||
-|SuperUltraCompact | Fastest performance model which sacrifices a bit more quality | `upscale-on-superultracompact4x` | `Shift+3` | RTX 3060?|
-|||`upscale-on-superultracompact2x`|`Shift+6`||
+|Model | Description | Keybinding | Minimum recommended GPU for upscaling 1080p to 4k |
+|-|-|-|-|
+|Quality | Highest quality model | `Shift+1` | RTX 4090|
+|Balanaced | High quality model which trades slight quality for major performance gains | `Shift+2` | RTX 3080|
+|Performance | Fastest performance model which sacrifices a bit more quality  | `Shift+3` | RTX 3060|
 
-Comparisons between Compact, UltraCompact, and SuperUltraCompact models: https://slow.pics/c/V3GkBJyR
+The default upscaling profile is the Balanced profile. The default upscaling profile is specified in `mpv-upscale-2x_animejanai/portable_config/mpv.conf`. To change the default profile, edit the `mpv.conf` file and change the `profile=upscale-on-ultracompact4x` line to a profile name from the above table based on your hardware requirements and preferences.
 
-The 2x and 4x profiles behave the same on HD videos, but the 4x profiles will run the models twice on SD videos and produce a sharper result. 
-
-The default upscaling profile is set up to use the UltraCompact model with the profile name `upscale-on-ultracompact4x`. The default upscaling profile is specified in `mpv-upscale-2x_animejanai/portable_config/mpv.conf`. To change the default profile, edit the `mpv.conf` file and change the `profile=upscale-on-ultracompact4x` line to a profile name from the above table based on your hardware requirements and preferences.
-
-The upscaling can be further customized using the configuration file for AnimeJaNai which is located at `mpv-upscale-2x_animejanai/portable_config/shaders/animejanai_v2.conf`. The configuration file allows the setup of up to 9 custom slots and also the use of custom chains, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. All available settings are described in more detail in the config file. More information on custom configurations will be available on the wiki soon. The custom slots can be activated with keybindings `Ctrl+1` through `Ctrl+9`. To use one of these custom slots as the default upscaler, set the appropriate profile name corresponding to the desired slot in mpv.conf, such as `profile=upscale-on-1`.
-
-All keybindings can be customized by editing lines near the bottom of the `mpv-upscale-2x_animejanai/portable_config/input.conf` file. By default, AnimeJaNai upscaling can be turned off using the `Ctrl+0` keybinding.
+The upscaling can be further customized using the AnimeJaNaiConfEditor which can be launched by pressing `ctrl+E` from mpvnet. The editor allows the setup of up to 9 custom slots and also the use of custom chains, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. The default upscaling profile can also be set using the conf editor. 
 
 All other mpv settings can be configured by editing `mpv-upscale-2x_animejanai/portable_config/mpv.conf` (see the [mpv manual](https://mpv.io/manual/stable/) for all options) for mpv options or `mpv-upscale-2x_animejanai/portable_config/input.conf` for mpv keybindings. 
 
