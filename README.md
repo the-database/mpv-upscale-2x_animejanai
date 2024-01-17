@@ -23,7 +23,11 @@ The player is preconfigured to upscale with 2x_AnimeJaNai models, and makes 3 up
 |Balanaced | High quality model which trades slight quality for major performance gains | `Shift+2` | RTX 3080|
 |Performance | Fastest performance model which sacrifices a bit more quality  | `Shift+3` | RTX 3060|
 
-The default upscaling profile is the Balanced profile which is recommended for users running an NVIDIA RTX 3080 or higher. Upscaling can be further customized using the AnimeJaNaiConfEditor which can be launched by pressing `ctrl+E` from mpvnet. The editor allows the setup of up to 9 custom slots and also the use of custom chains, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. The default upscaling profile can also be set using the conf editor. 
+The default upscaling profile is the Balanced profile which is recommended for users running an NVIDIA RTX 3080 or higher. 
+
+## Customizing Profiles and Other Settings
+
+Upscaling can be further customized using the AnimeJaNaiConfEditor which can be launched by pressing `ctrl+E` from mpvnet. The editor allows the setup of up to 9 custom slots and also the use of custom chains, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. The default upscaling profile can also be set using the conf editor. 
 
 All other mpv settings can be configured by editing `mpv-upscale-2x_animejanai/portable_config/mpv.conf` (see the [mpv manual](https://mpv.io/manual/stable/) for all options) for mpv options or `mpv-upscale-2x_animejanai/portable_config/input.conf` for mpv keybindings. 
 
