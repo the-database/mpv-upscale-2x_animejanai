@@ -1,7 +1,8 @@
 # Upscaling Anime in mpv with 2x_AnimeJaNai V3
 [![Discord](https://img.shields.io/discord/1121653618173546546?label=Discord&logo=Discord&logoColor=white)](https://discord.gg/EeFfZUBvxj)
 
-<img src="demov3.webp"/>
+  <a href="./demov3.webp?raw=1"><img src="demov3.webp"/></a>
+  <p align="center"><sup>(click image to enlarge)</sup></p>
 
 ## Overview
 
