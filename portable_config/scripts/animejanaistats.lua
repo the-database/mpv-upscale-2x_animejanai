@@ -11,12 +11,10 @@ function show_animejanai_stats()
     else
         local message = ""
 
-        mp.osd_message(mp.get_property("vf"))
-
         if mp.get_property("vf") == "" then
             message = "Upscaling is disabled"
         else
-            local data_file_path = (mp.command_native({'expand-path', "~~\\..\\animejanai\\core\\currentanimejanai.log"}))
+            local data_file_path = (mp.command_native({'expand-path', "~~/../animejanai/core/currentanimejanai.log"}))
             message = read_file(data_file_path)
 
             if message == "" then
@@ -30,7 +28,7 @@ function show_animejanai_stats()
 end
 
 function read_file(path)
-    local file = open(path, "rb") -- r read mode and b binary mode
+    local file = open(path, "r") -- r read mode and b binary mode
     if not file then return nil end
     local content = file:read "*a" -- *a or *all reads the whole file
     file:close()
