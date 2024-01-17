@@ -15,7 +15,7 @@ Ensure your NVIDIA graphics drivers are up to date. Download and extract the [la
 
 When playing a video for the first time, a TensorRT engine file will be created for the selected ONNX model. Playback will be paused and a command prompt box will open. Please make sure to wait while the engine is created. Engine creation only needs to happen once per model. Playback will resume on its own when finished.
 
-To confirm
+To confirm upscaling status, press `ctrl+J` to view upscaling stats. This shows the current profile, and the currently running upscaling models if any. 
 
 The player is preconfigured to upscale with 2x_AnimeJaNai models, and makes 3 upscaling profiles available by default. The available profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
 
