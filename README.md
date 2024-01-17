@@ -15,6 +15,8 @@ Ensure your NVIDIA graphics drivers are up to date. Download and extract the [la
 
 When playing a video for the first time, a TensorRT engine file will be created for the selected ONNX model. Playback will be paused and a command prompt box will open. Please make sure to wait while the engine is created. Engine creation only needs to happen once per model. Playback will resume on its own when finished.
 
+To confirm
+
 The player is preconfigured to upscale with 2x_AnimeJaNai models, and makes 3 upscaling profiles available by default. The available profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
 
 |Model | Description | Keybinding | Minimum recommended GPU for upscaling 1080p to 4k |
@@ -28,6 +30,9 @@ The default upscaling profile is the Balanced profile which is recommended for u
 ## Customizing Profiles and Other Settings
 
 Upscaling can be further customized using the AnimeJaNaiConfEditor which can be launched by pressing `ctrl+E` from mpvnet. The editor allows the setup of up to 9 custom slots and also the use of custom chains, conditional settings based on video resolution and framerate, downscaling to improve performance, and more. The default upscaling profile can also be set using the conf editor. 
+
+![image](https://github.com/the-database/mpv-upscale-2x_animejanai/assets/25811902/76a8db5b-8c67-4b0c-911a-9b02598fb37a)
+
 
 All other mpv settings can be configured by editing `mpv-upscale-2x_animejanai/portable_config/mpv.conf` (see the [mpv manual](https://mpv.io/manual/stable/) for all options) for mpv options or `mpv-upscale-2x_animejanai/portable_config/input.conf` for mpv keybindings. 
 
