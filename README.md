@@ -19,7 +19,7 @@ To confirm
 
 The player is preconfigured to upscale with 2x_AnimeJaNai models, and makes 3 upscaling profiles available by default. The available profiles are described in more detail below. Any of these profiles can be selected on the fly using the keybinding listed below. 
 
-|Model | Description | Keybinding | Minimum recommended GPU for upscaling 1080p to 4k |
+|Profile | Description | Keybinding | Minimum recommended GPU for upscaling 1080p to 4k |
 |-|-|-|-|
 |Quality | Highest quality model | `Shift+1` | RTX 4090|
 |Balanaced | High quality model which trades slight quality for major performance gains | `Shift+2` | RTX 3080|
@@ -45,7 +45,7 @@ The 2x_AnimeJaNai models are a collection of real-time 2x Real-ESRGAN Compact, U
 
 Most HD anime are [not produced in native 1080p resolution](https://guide.encode.moe/encoding/descaling.html) but rather have a production resolution between 720p and 1080p. When the anime is distributed to consumers via TV broadcast, web streaming, or home video, the video is scaled up to 1080p, leading to scaling artifacts and a loss of image clarity in the source video. The aim of these models is to address these scaling and blur-related issues while upscaling to deliver a result that appears as if the anime was originally mastered in 4K resolution.
 
-The development of the V3 models spanned over five months, during which over 100 release candidate models were trained and meticulously refined. The V3 models introduce several notable improvements compared to their V2 counterparts, including:
+The development of the V3 models spanned over seven months, during which over 100 release candidate models were trained and meticulously refined. The V3 models introduce several notable improvements compared to their V2 counterparts, including:
 - More faithful appearance to original source
 - Improved handling of oversharpening artifacts, ringing, aliasing
 - Better at preserving intentional blur in scenes using depth of field
