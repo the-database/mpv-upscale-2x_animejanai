@@ -223,7 +223,7 @@ def run_animejanai_with_keybinding(clip, container_fps, keybinding):
             logger.debug(f'run_animejanai slot {keybinding} {chain_key}')
 
             current_logger_info.append(f"Active Upscale Chain: {chain_key.replace('chain_', '')};    Resolution Range: {chain_conf['min_resolution']} - {chain_conf['max_resolution']};    FPS Range: {chain_conf['min_fps']} - {chain_conf['max_fps']}")
-            
+
             run_animejanai(clip, container_fps, chain_conf, config['global']['backend'])
             write_current_log()
             return
