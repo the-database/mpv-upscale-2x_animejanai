@@ -229,7 +229,7 @@ def run_animejanai(clip, container_fps, chain_conf, backend):
             clip = vs.core.std.Crop(clip, 
                                     left=pad_w//2, right=pad_w - (pad_w//2), 
                                     top=pad_h//2, bottom=pad_h - (pad_h//2))
-            current_logger_steps.append(f"Padded to {target_w + pad_w}x{target_h + pad_h}, applied RIFE v{chain_conf['rife_model']} Interpolation {chain_conf['rife_factor_numerator'] / chain_conf['rife_factor_denominator']:.3f}x, cropped back to {target_w}x{target_h + pad_h};    New Video FPS: {float(container_fps) * chain_conf['rife_factor_numerator'] / chain_conf['rife_factor_denominator']:.3f}")
+            current_logger_steps.append(f"Padded to {target_w + pad_w}x{target_h + pad_h}, applied RIFE v{chain_conf['rife_model']} Interpolation {chain_conf['rife_factor_numerator'] / chain_conf['rife_factor_denominator']:.3f}x, cropped back to {target_w}x{target_h};    New Video FPS: {float(container_fps) * chain_conf['rife_factor_numerator'] / chain_conf['rife_factor_denominator']:.3f}")
         else:
             current_logger_steps.append(f"Applied RIFE v{chain_conf['rife_model']} Interpolation {chain_conf['rife_factor_numerator'] / chain_conf['rife_factor_denominator']:.3f}x;    New Video FPS: {float(container_fps) * chain_conf['rife_factor_numerator'] / chain_conf['rife_factor_denominator']:.3f}")
 
