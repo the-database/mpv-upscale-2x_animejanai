@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "id": "7b7e2d37-376e-44bd-bcac-ae1b84e79e5f",
+  "submitted_at": "2026-06-13T19:24:57.431Z",
+  "app_version": "",
+  "backend": "TensorRT",
+  "gpu": "RTX 4090",
+  "vram_mb": 24564,
+  "gpu_power_w": 450,
+  "cpu": "",
+  "os": "",
+  "driver": "",
+  "results": {
+    "Balanced": {
+      "1920x1080": 79
+    }
+  },
+  "note": ""
+}
